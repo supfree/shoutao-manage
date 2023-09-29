@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="header">
         <!-- <div class="m-header-search" v-if="is_search">
             <div class="u-flex alignItems">
                 <el-input class="inputDeep" size="large" v-model="key_word" placeholder="请输入您要搜索的内容"
@@ -13,24 +13,24 @@
             <div class="header-logo mr30">
                 <router-link class="header-logo" to="/">
                     <img src="../assets/logo.png" alt="">
-                    <span class="logo-text">光生传媒</span>
+                    <span class="logo-text">{{ $t('main.Title') }}</span>
                 </router-link>
             </div>
             <div v-if="!is_search" class="header-nav">
                 <div class="header-nav_item">
-                    <router-link to="/live">直播</router-link>
+                    <router-link to="/live">{{ $t('main.Live') }}</router-link>
                 </div>
                 <div class="header-nav_item">
-                    <router-link to="/master">达人</router-link>
+                    <router-link to="/master">{{ $t('main.Talent') }}</router-link>
                 </div>
                 <div class="header-nav_item">
-                    <router-link to="/join">加入我们</router-link>
+                    <router-link to="/join">{{ $t('main.Join-us') }}</router-link>
                 </div>
                 <div class="header-nav_item">
-                    <router-link to="/new">新闻中心</router-link>
+                    <router-link to="/new">{{ $t('main.News') }}</router-link>
                 </div>
                 <div class="header-nav_item">
-                    <router-link to="/about">关于光生</router-link>
+                    <router-link to="/about">{{ $t('main.About') }}</router-link>
                 </div>
             </div>
             <div class="right u-flex alignItems">
@@ -40,22 +40,19 @@
                 </div>
                 <div class="u-flex alignItems" v-else>
                     <img class="icon-search" src="../assets/images/icons/search.png" alt="menu" @click="toggleSearch">
-                    <img class="icon-menu" src="../assets/images/icons/menu.png" alt="menu" @click="toggleMenu">
+                    <!-- <img class="icon-menu" src="../assets/images/icons/menu.png" alt="menu" @click="toggleMenu"> -->
+                    <div class="icon-menu" id="btnSwitch" @click="toggleMenu">
+                        <div class="BtnLine">
+                            <div class="LineTop"></div>
+                            <div class="LineBottom"></div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
             <div class="menu" v-if="is_menu">
-                <div class="menu-header">
-                    <div class="header-logo mr30">
-                        <img src="../assets/logo.png" alt="">
-                        <span class="name">光生传媒</span>
-                    </div>
-                    <el-icon color="#ffffff" size="26" @click="toggleMenu">
-                        <Close />
-                    </el-icon>
-                </div>
-                <div class="menu-list">
-                    <div v-for="(item, index) in menuList" :key="index" @click="goLink(item.path)">{{ item.name }}</div>
+                <div class="menu-list animate__animated animate__fadeIn">
+                    <div class="touch" v-for="item in menuList" :key="item" @click="gotoInfo(item.path)">{{ item.name }}</div>
                 </div>
             </div>
         </div>
@@ -63,36 +60,47 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-const router = useRouter()
+const router = useRouter();
+const { t } = useI18n();
 
 let key_word = ref('');
+let menuList = ref([]);
+
 const is_search = ref(false);
 const is_menu = ref(false);
 
-const menuList = [
-    {
-        name: '直播',
-        path: '/live'
-    },
-    {
-        name: '达人',
-        path: '/master'
-    },
-    {
-        name: '加入我们',
-        path: '/join'
-    },
-    {
-        name: '新闻中心',
-        path: '/new'
-    },
-    {
-        name: '关于光生',
-        path: '/about'
-    }
-]
+onMounted(() => {
+    console.log(t('main.Live'));
+    menuList = [
+        // {
+        //     name: t('main.Index'),
+        //     path: '/'
+        // },
+        {
+            name: t('main.Live'),
+            path: '/live'
+        },
+        {
+            name: t('main.Talent'),
+            path: '/master'
+        },
+        {
+            name: t('main.Join-us'),
+            path: '/join'
+        },
+        {
+            name: t('main.News'),
+            path: '/new'
+        },
+        {
+            name: t('main.About'),
+            path: '/about'
+        }
+    ]
+})
 
 // 控制搜索栏显示
 const toggleSearch = () => {
@@ -103,26 +111,65 @@ const toggleSearch = () => {
 // h5菜单显示
 const toggleMenu = () => {
     is_menu.value = !is_menu.value;
+
+    const GloHeader = document.getElementById("globalheader");
+    const NavigationBar = document.querySelector(".header-box");
+    const lineTop = document.querySelector(".LineTop");
+    const lineBottom = document.querySelector(".LineBottom");
+    const logoText = document.querySelector(".logo-text");
+    const htmlElement = document.documentElement;
+    const bodyElement = document.body;
+
+    if (is_menu.value) {
+        GloHeader.style.transition = "0.5s";
+        GloHeader.style.backgroundColor = "#000";
+        logoText.style.color = "#FFFFFF";
+        NavigationBar.style.backgroundColor = "#111111";
+        NavigationBar.style.transition = "1s";
+        lineTop.style.transform = "translateY(3px) rotate(45deg)";
+        lineTop.style.backgroundColor = "#ffffff";
+        lineBottom.style.backgroundColor = "#ffffff";
+        lineBottom.style.width = "18px";
+        lineBottom.style.transform = "translateY(-3px) rotate(-45deg)";
+        htmlElement.style.overflow = "hidden";
+        bodyElement.style.overflow = "hidden";
+    } else {
+        GloHeader.style.transition = "0.5s";
+        GloHeader.style.backgroundColor = "#ffffff";
+        logoText.style.color = "#000000";
+        NavigationBar.style.backgroundColor = "#ffffff";
+        NavigationBar.style.transition = "1s";
+        lineTop.style.transform = "translateY(0) rotate(0deg)";
+        lineTop.style.backgroundColor = "#111111";
+        lineBottom.style.backgroundColor = "#111111";
+        lineBottom.style.width = "12px";
+        lineBottom.style.transform = "translateY(0) rotate(0deg)";
+        htmlElement.style.overflow = "visible";
+        bodyElement.style.overflow = "visible";
+    }
 }
 
 // 搜索跳转
 const search = () => {
-    toggleSearch();
-    router.push({ path: '/search', query: { value: key_word.value } })
+    is_search.value = true;
+    setTimeout(() => {
+        router.push({ path: '/search', query: { value: key_word.value } })
+    }, 500)
 }
 
-// goLink
-const goLink = (path) => {
+const gotoInfo = (path) => {
     toggleMenu();
-    router.push(path);
+    router.push({ path: path });
 }
-
-
-// key_word = router.query.value;
 
 </script>
 
 <style lang="scss" scoped>
+.header {
+    width: 100%;
+    height: 100%;
+}
+
 .m-header-search {
     display: none;
     width: 100%;
@@ -139,13 +186,15 @@ const goLink = (path) => {
 }
 
 .header-box {
+    z-index: 99;
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 60%;
     height: 100%;
-    padding: 8px 0;
+    // padding: 8px 0;
     margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .header-logo {
@@ -206,57 +255,72 @@ const goLink = (path) => {
     .icon-search {
         width: 14px;
         height: 14px;
+        margin-right: 20px;
         cursor: pointer;
     }
 
+    // .icon-menu {
+    //     display: none;
+    //     width: 28px;
+    //     height: 28px;
+    //     margin-left: 10px;
+    //     cursor: pointer;
+    // }
+
     .icon-menu {
         display: none;
-        width: 28px;
-        height: 28px;
-        margin-left: 10px;
-        cursor: pointer;
+
+        .BtnLine {
+            // width: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .LineTop {
+            width: 18px;
+            height: 2px;
+            transition: 0.5s;
+            border-radius: 10px;
+            background-color: #111111;
+        }
+
+        .LineBottom {
+            width: 12px;
+            height: 2px;
+            margin-top: 4px;
+            transition: 0.5s;
+            border-radius: 10px;
+            background-color: #111111;
+        }
     }
 }
 
 .menu {
     z-index: 999;
     position: fixed;
-    top: 0;
+    top: 56px;
     left: 0;
     width: 100%;
     height: 100vh;
+    overflow: hidden;
     background-color: #111111;
-
-    &-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        height: 56px;
-        padding: 0 20px;
-
-        .name {
-            color: #FFFFFF;
-            font-size: 14px;
-            font-weight: 600;
-        }
-    }
 
     &-list {
         width: 100%;
-        height: calc(100% - 50px);
+        // height: calc(100vh - 58px);
         padding: 0 20px;
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow-y: hidden;
         color: #FFFFFF;
 
         div {
-            font-size: 20px;
-            font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
-            font-weight: 500;
             line-height: 29px;
             padding: 22px 28px;
             text-align: left;
+            font-size: 20px;
+            font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
+            font-weight: 500;
+            text-decoration: none;
             color: rgba(255, 255, 255, 0.93);
         }
     }

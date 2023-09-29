@@ -11,40 +11,46 @@
                 <div>
                     <p class="title">{{ item.title }}</p>
                     <p class="info u-line-2">{{ item.info }}</p>
-                    <el-link type="primary u-line-1" :href="item.link">{{ item.link }}</el-link>
+                    <el-link class="u-line-1" type="primary" :href="item.link">{{ item.link }}</el-link>
                 </div>
             </div>
             <div class="content-item" v-for="(item, index) in list" :key="index">
                 <div>
                     <p class="title">{{ item.title }}</p>
                     <p class="info u-line-2">{{ item.info }}</p>
-                    <el-link type="primary u-line-1" :href="item.link">{{ item.link }}</el-link>
+                    <el-link class="u-line-1" type="primary" :href="item.link">{{ item.link }}</el-link>
                 </div>
             </div>
+            <el-empty :image-size="200" />
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { get, imageUrl } from '../assets/js/request.js';
 import { useRoute } from "vue-router";
 const route = useRoute();
 let value = ref(route.query.value);
+console.log(value);
 
-const list = [
-    {
-        url: 'https://img2.woyaogexing.com/2023/09/06/56f0f6f437ab345bb0f4d62056701785.jpg',
-        title: "未央",
-        info: "张尧1992年出生于中华人民共和国湖南省张尧1992年出生于中华人民共和国湖南省张尧1992年出生于中华人民共和国湖南省",
-        link: "https://www.vividtide.com/cn/artist/weiyang"
-    },
-    {
-        url: 'https://img2.woyaogexing.com/2023/09/06/56f0f6f437ab345bb0f4d62056701785.jpg',
-        title: "未央",
-        info: "张尧1992年出生于中华人民共和国湖南省",
-        link: "https://www.vividtide.com/cn/artist/weiyang"
-    }
-]
+onMounted(() => {
+    getSearch();
+})
+
+const list = []
+const page = ref(1);
+const detail = ref([]);
+const getSearch = () => {
+    get('index/search', {
+        store_id: localStorage.getItem('key') || 1,
+        search: value,
+        page: page.value
+    }).then(res => {
+        detail.value = res.data;
+        console.log(res, imageUrl);
+    })
+}
 
 </script>
 

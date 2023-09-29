@@ -5,7 +5,7 @@
             <div class="mask"></div>
         </div>
         <div class="contian">
-            <div class="header">
+            <div class="header wow animate__animated animate__fadeInUpBig">
                 <div class="info">
                     <h3>聂雨彤</h3>
                     <p class="tip">
@@ -23,9 +23,11 @@
             <div class="flex-icon">
                 <h3>触达平台</h3>
                 <div class="logo-list">
-                    <div class="box" v-for="item in logoList" :key="item">
-                        <img :src="item.url" alt="">
-                        <p class="name">{{ item.name }}</p>
+                    <div class="box" v-for="(item, index) in logoList" :key="item">
+                        <div class="fadea-transition" v-if="showIcon(index)">
+                            <img :src="item.url" alt="">
+                            <p class="name">{{ item.name }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -33,15 +35,127 @@
             <!-- 合作品牌 -->
             <div class="flex-icon">
                 <h3>合作品牌</h3>
-                <div class="box" v-for="item in ocList" :key="item">
-                    <img :src="item.url" alt="">
-                    <p class="name">{{ item.name }}</p>
+                <div class="logo-list">
+                    <div class="box" v-for="(item, index) in ocList" :key="item">
+                        <img class="fadea-transition" :src="item" alt="" v-if="showIcon1(index)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 娱乐直播 -->
+            <div class="ent-live entertainment">
+                <div class="title">娱乐直播</div>
+                <swiper class="mySwiper" :slidesPerView="Boolean(_isMobile) ? 'auto' : 3"
+                    :centeredSlides="Boolean(_isMobile)"
+                    :autoplay="Boolean(_isMobile) ? '' : { delay: 3000, disableOnInteraction: false }" :loop="true"
+                    :spaceBetween="36" :modules="modules" :navigation="{
+                        nextEl: '.entertainment .swiper-button-next',
+                        prevEl: '.entertainment .swiper-button-prev',
+                    }" :pagination="{ clickable: true }">
+                    <swiper-slide v-for="(item, index) in list" :key="index">
+                        <Card :item="item"></Card>
+                    </swiper-slide>
+                </swiper>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+
+            <!-- 电商直播 -->
+            <div class="ent-live commerce">
+                <div class="title">电商直播</div>
+                <swiper class="mySwiper" :slidesPerView="Boolean(_isMobile) ? 'auto' : 3"
+                    :centeredSlides="Boolean(_isMobile)"
+                    :autoplay="Boolean(_isMobile) ? '' : { delay: 3000, disableOnInteraction: false }" :loop="true"
+                    :spaceBetween="36" :modules="modules" :navigation="{
+                        nextEl: '.commerce .swiper-button-next',
+                        prevEl: '.commerce .swiper-button-prev',
+                    }" :pagination="{ clickable: true }">
+                    <swiper-slide v-for="(item, index) in list1" :key="index">
+                        <Card :item="item"></Card>
+                    </swiper-slide>
+                </swiper>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+            </div>
+        </div>
+        <div class="contact">
+            <div class="qrcode">
+                <div class="box">
+                    <img src="../assets/images/qrcode1.png" alt="">
+                    <div>
+                        <p>商务合作</p>
+                        <p>微信扫描二维码</p>
+                        <p>长按图片保存二维码到本地</p>
+                    </div>
+                </div>
+                <div class="box">
+                    <img src="../assets/images/qrcode1.png" alt="">
+                    <div>
+                        <p>签约咨询</p>
+                        <p>微信扫描二维码</p>
+                        <p>长按图片保存二维码到本地</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script setup>
+import { WOW } from 'wowjs';
+import { getCurrentInstance, onMounted, ref, onUnmounted } from "vue";
+import Card from "@/components/Card.vue";
+import { get, post, imageUrl } from '../assets/js/request.js';
+import { useRoute } from "vue-router";
+const route = useRoute();
+let value = ref(route.query.id);
+// import Swiper core and required modules
+import { Autoplay, Navigation } from "swiper/modules";
+
+// Import Swiper Vue.js components
+import { Swiper, SwiperSlide } from "swiper/vue";
+
+// Import Swiper styles
+import 'swiper/scss';
+import 'swiper/scss/navigation';
+import 'swiper/scss/pagination';
+
+const modules = [
+    Navigation, Autoplay
+];
+
+// 判断设备
+const _isMobile = getCurrentInstance().appContext.config.globalProperties.$utils._isMobile();
+
+onMounted(() => {
+    new WOW().init();
+    getArtist();
+    getHomeInfo();
+    window.addEventListener("scroll", handleScroll);
+})
+
+
+const getArtist = () => {
+    get('index/artistDetails', {
+        store_id: localStorage.getItem('key') || 1,
+        id: value.value
+    }).then(res => {
+        console.log(res, value, imageUrl);
+    })
+}
+
+const list = ref([]);
+const list1 = ref([]);
+const getHomeInfo = () => {
+    post('index/index', {
+        store_id: localStorage.getItem('key') || 1
+    }).then(res => {
+        // console.log(res);
+        list.value = res.data[2];
+        list1.value = res.data[3];
+    })
+}
+
+
 // 触达平台
 const logoList = [
     {
@@ -88,6 +202,59 @@ const ocList = [
     require('../assets/images/brand6.png'),
     require('../assets/images/brand6.png'),
 ];
+
+// 触达平台
+let visibleIcons = ref([]);
+const showIcon = (index) => {
+    return visibleIcons.value.indexOf(index) != -1;
+}
+
+const fadeShow = () => {
+    let index = ref(0);
+    // 使用定时器逐个显示图标
+    let interval = setInterval(() => {
+        if (index.value >= logoList.length) {
+            clearInterval(interval);
+            return;
+        }
+        visibleIcons.value.push(index.value);
+        index.value++;
+    }, 200); // 间隔200ms显示一个图标
+}
+
+// 合作品牌
+let visibleIcons1 = ref([]);
+const showIcon1 = (index) => {
+    return visibleIcons.value.indexOf(index) != -1;
+}
+
+const fadeShow1 = () => {
+    let index = ref(0);
+    // 使用定时器逐个显示图标
+    let interval = setInterval(() => {
+        if (index.value >= ocList.length) {
+            clearInterval(interval);
+            return;
+        }
+        visibleIcons1.value.push(index.value);
+        index.value++;
+    }, 200); // 间隔200ms显示一个图标
+}
+
+const handleScroll = () => {
+    const scrollTop = document.documentElement.scrollTop;
+    console.log(scrollTop);
+    if (scrollTop >= 100) {
+        fadeShow();
+    }
+    if (scrollTop >= 400) {
+        fadeShow1();
+    }
+}
+
+onUnmounted(() => {
+    window.removeEventListener("scroll", handleScroll);
+})
 </script>
 <style lang="scss" scoped>
 .artist {
@@ -97,7 +264,7 @@ const ocList = [
     .mask-box {
         position: relative;
         width: 100%;
-        height: 4.8rem;
+        height: 4rem;
 
         .mask {
             z-index: 1;
@@ -171,9 +338,9 @@ const ocList = [
     .flex-icon {
         h3 {
             font-size: 24px;
-font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
-font-weight: 500;
-color: rgba(17,17,17,0.93);
+            font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
+            font-weight: 500;
+            color: rgba(17, 17, 17, 0.93);
         }
 
         .logo-list {
@@ -181,8 +348,9 @@ color: rgba(17,17,17,0.93);
             flex-wrap: wrap;
 
             .box {
+                width: .375rem;
                 text-align: center;
-                margin: 24px 24px 24px 0;
+                margin: 25px 25px 25px 0;
             }
 
             img {
@@ -201,19 +369,170 @@ color: rgba(17,17,17,0.93);
         }
     }
 
-    /* 小型设备（电话，平板 992px 及以下） */
-    @media only screen and (max-width: 992px) {
-        .artist {
+    .ent-live {
+        position: relative;
+        width: 100%;
+        // padding: 0 30px;
+        margin: 30px auto;
 
-            .bg-poster {
-                height: 180px;
+        .title {
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
+            color: rgba(17, 17, 17, 0.93);
+        }
+
+        .mySwiper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+
+            .swiper-slide {
+                width: 1.9rem !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                text-align: center;
+                background-color: #fff;
+                /* Center slide text vertically */
             }
         }
 
-        .contian {
-            width: 100%;
-            padding: 0 30px;
+        :deep(.swiper-button-prev) {
+            top: var(--swiper-navigation-top-offset, 55%);
+            left: var(--swiper-navigation-sides-offset, -40px);
+            color: #111111 !important;
+        }
+
+        :deep(.swiper-button-next) {
+            top: var(--swiper-navigation-top-offset, 55%);
+            right: var(--swiper-navigation-sides-offset, -40px);
+            color: #111111 !important;
         }
     }
 }
-</style>
+
+.contact {
+
+    .qrcode {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        width: 51%;
+        margin: 100px auto 200px;
+
+        .box {
+            display: flex;
+            align-items: center;
+            text-align: left;
+            padding: 30px;
+            margin-right: 30px;
+            border-radius: 8px;
+            background-color: #FAFAFA;
+
+            p {
+                margin-top: 5px;
+                font-size: 13px;
+                font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
+                font-weight: 400;
+                color: rgba(17, 17, 17, 0.55);
+            }
+
+            p:first-child {
+                font-size: 24px;
+                font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
+                font-weight: 500;
+                color: rgba(17, 17, 17, 0.93);
+            }
+
+
+            img {
+                width: 74px;
+                height: 74px;
+                margin-right: 20px;
+            }
+        }
+
+        .el-divider {
+            width: 1px;
+            height: 120px;
+            margin-top: 60px;
+        }
+    }
+}
+
+@media only screen and (max-width: 1300px) {
+    .ent-live {
+        .mySwiper {
+            .ent-item {
+                height: 600px;
+            }
+        }
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+        display: none;
+    }
+}
+
+/* 小型设备（电话，平板 992px 及以下） */
+@media only screen and (max-width: 992px) {
+    .artist {
+
+        .mask-box {
+            height: 200px;
+        }
+
+        // .bg-poster {
+        //     height: 180px;
+        // }
+    }
+
+
+
+    .contian {
+        width: 100% !important;
+        padding: 0 30px;
+
+        .header {
+            .info {
+                width: 100%;
+            }
+        }
+
+        .logo-list {
+            .box {
+                width: 56px !important;
+            }
+        }
+
+        .ent-live {
+
+            .mySwiper {
+                width: 100% !important;
+
+                .swiper-slide {
+                    width: 330px !important;
+                    // height: 500px !important;
+                }
+            }
+        }
+    }
+
+    .contact {
+        padding: 0 30px !important;
+
+        .qrcode {
+            display: block;
+            width: 100% !important;
+            margin: 40px auto 70px;
+
+            .box {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    }
+}</style>

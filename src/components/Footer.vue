@@ -3,74 +3,72 @@
         <div class="footer-list">
             <div>
                 <div>
-                    <p>直播</p>
-                    <router-link to="/">娱乐直播</router-link>
-                    <router-link to="/">电商直播</router-link>
+                    <p>{{ $t('main.Live') }}</p>
+                    <router-link to="/">{{ $t('main.Entertainment-live') }}</router-link>
+                    <router-link to="/">{{ $t('main.E-commerce-live') }}</router-link>
                 </div>
                 <div>
-                    <p>达人</p>
-                    <router-link to="/">达人列表</router-link>
-                    <router-link to="/">电商直播</router-link>
-                </div>
-            </div>
-
-            <div>
-                <div>
-                    <p>加入我们</p>
-                    <router-link to="/">加入光生</router-link>
-                    <router-link to="/">员工生活</router-link>
-                </div>
-                <div>
-                    <p>新闻中心</p>
-                    <router-link to="/">最新新闻</router-link>
+                    <p>{{ $t('main.Talent') }}</p>
+                    <router-link to="/">{{ $t('main.List-of-talents') }}</router-link>
                 </div>
             </div>
 
             <div>
                 <div>
-                    <p>关于光生</p>
-                    <router-link to="/">关于光生</router-link>
-                    <router-link to="/">触达平台</router-link>
-                    <router-link to="/">品牌合作</router-link>
-                    <router-link to="/">团队介绍</router-link>
-                    <router-link to="/">服务内容</router-link>
-                    <router-link to="/">公司地址</router-link>
+                    <p>{{ $t('main.Join-us') }}</p>
+                    <router-link to="/">{{ $t('main.Join') }}</router-link>
+                    <router-link to="/">{{ $t('main.Employee-life') }}</router-link>
+                </div>
+                <div>
+                    <p>{{ $t('main.News') }}</p>
+                    <router-link to="/">{{ $t('main.Hot-news') }}</router-link>
                 </div>
             </div>
 
             <div>
                 <div>
-                    <p>管理后台</p>
-                    <router-link to="/">艺人管理</router-link>
+                    <p>{{ $t('main.About') }}</p>
+                    <router-link to="/">{{ $t('main.About') }}</router-link>
+                    <router-link to="/">{{ $t('main.Touch-the-platform') }}</router-link>
+                    <router-link to="/">{{ $t('main.Cooperative-brand') }}</router-link>
+                    <router-link to="/">{{ $t('main.Team-introduction') }}</router-link>
+                    <router-link to="/">{{ $t('main.Service-content') }}</router-link>
+                    <router-link to="/">{{ $t('main.Company-address') }}</router-link>
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <p>{{ $t('main.Manage') }}</p>
+                    <router-link to="/">{{ $t('main.Artist-management') }}</router-link>
                 </div>
             </div>
         </div>
         <el-collapse id="el-footer-list">
-            <el-collapse-item title="直播" name="1">
-                <router-link to="/">娱乐直播</router-link>
-                <router-link to="/">电商直播</router-link>
+            <el-collapse-item :title="$t('main.Live')" name="1">
+                <router-link to="/">{{ $t('main.Entertainment-live') }}</router-link>
+                <router-link to="/">{{ $t('main.E-commerce-live') }}</router-link>
             </el-collapse-item>
-            <el-collapse-item title="达人" name="2">
-                <router-link to="/">达人列表</router-link>
-                <router-link to="/">电商直播</router-link>
+            <el-collapse-item :title="$t('main.Talent')" name="2">
+                <router-link to="/">{{ $t('main.List-of-talents') }}</router-link>
             </el-collapse-item>
-            <el-collapse-item title="加入我们" name="3">
-                <router-link to="/">加入光生</router-link>
-                <router-link to="/">员工生活</router-link>
+            <el-collapse-item :title="$t('main.Join-us')" name="3">
+                <router-link to="/">{{ $t('main.Join') }}</router-link>
+                <router-link to="/">{{ $t('main.Employee-life') }}</router-link>
             </el-collapse-item>
-            <el-collapse-item title="新闻中心" name="4">
-                <router-link to="/">最新新闻</router-link>
+            <el-collapse-item :title="$t('main.News')" name="4">
+                <router-link to="/">{{ $t('main.Hot-news') }}</router-link>
             </el-collapse-item>
-            <el-collapse-item title="关于光生" name="5">
-                <router-link to="/">关于光生</router-link>
-                <router-link to="/">触达平台</router-link>
-                <router-link to="/">品牌合作</router-link>
-                <router-link to="/">团队介绍</router-link>
-                <router-link to="/">服务内容</router-link>
-                <router-link to="/">公司地址</router-link>
+            <el-collapse-item :title="$t('main.About')" name="5">
+                <router-link to="/">{{ $t('main.About') }}</router-link>
+                <router-link to="/">{{ $t('main.Touch-the-platform') }}</router-link>
+                <router-link to="/">{{ $t('main.Cooperative-brand') }}</router-link>
+                <router-link to="/">{{ $t('main.Team-introduction') }}</router-link>
+                <router-link to="/">{{ $t('main.Service-content') }}</router-link>
+                <router-link to="/">{{ $t('main.Company-address') }}</router-link>
             </el-collapse-item>
-            <el-collapse-item title="管理后台" name="6">
-                <router-link to="/">艺人管理</router-link>
+            <el-collapse-item :title="$t('main.Manage')" name="6">
+                <router-link to="/">{{ $t('main.Artist-management') }}</router-link>
             </el-collapse-item>
         </el-collapse>
         <div class="footer-info">
@@ -80,8 +78,8 @@
             </div>
             <div class="language">
                 <img src="../assets/images/icons/icon-earth.png" alt="">
-                <el-select class="inputDeep" v-model="value" placeholder="中文" size="large">
-                    <el-option v-for="item in language" :key="item.value" :label="item.label" :value="item.value" />
+                <el-select class="inputDeep" v-model="value" value-key="id" size="large" @change="selectChange">
+                    <el-option v-for="item in language" :key="item.id" :label="item.lang" :value="item.id" />
                 </el-select>
             </div>
         </div>
@@ -89,16 +87,62 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-const value = ref("简体中文");
-const language = [{
-    value: '简体中文',
-    label: '简体中文'
-},
-{
-    value: 'english',
-    label: 'english'
-}]
+import { get } from '../assets/js/request.js';
+import { ref, onMounted } from "vue";
+import { useI18n } from 'vue-i18n';
+const { locale } = useI18n();
+
+
+const value = ref(1);
+let language = ref([]);
+
+onMounted(() => {
+    getLanguage();
+    if (localStorage.getItem('key')) {
+        value.value = Number(localStorage.getItem('key'));
+        locale.value = localStorage.getItem('value');
+    }
+})
+
+// 获取首页信息
+const getLanguage = () => {
+    get('index/store').then(res => {
+        language.value = res.data;
+    })
+}
+
+// 选择
+const selectChange = (e) => {
+    switch (value.value) {
+        case 1:
+            locale.value = 'cn';
+            break;
+        case 2:
+            locale.value = 'en';
+            break;
+        case 3:
+            locale.value = 'ja';
+            break;
+        case 4:
+            locale.value = 'ru';
+            break;
+        case 5:
+            locale.value = 'ko';
+            break;
+        case 6:
+            locale.value = 'th';
+            break;
+        default:
+            locale.value = 'cn';
+            break;
+    }
+    console.log(e, locale.value);
+    localStorage.setItem('key', e);
+    localStorage.setItem('label', language.value[e - 1].lang);
+    localStorage.setItem('value', locale.value);
+    location.reload();
+    // window.scrollY(0);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -160,6 +204,7 @@ const language = [{
             img {
                 width: 24px;
                 height: 24px;
+                margin-right: 5px;
             }
 
             :deep(.el-select) {
@@ -167,9 +212,11 @@ const language = [{
 
                 .el-input {
                     width: max-content;
-                    max-width: 100px;
+                    max-width: 60px;
                     border: none;
                 }
+
+                --el-select-input-focus-border-color: none;
             }
         }
     }
@@ -216,6 +263,7 @@ const language = [{
 
     :deep(.el-collapse-item__wrap) {
         background: none !important;
+
         a {
             text-indent: 1em !important;
             margin-top: 10px !important;

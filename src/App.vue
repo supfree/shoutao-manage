@@ -2,7 +2,7 @@
   <div class="page-box">
     <el-container>
       <!-- 头部 -->
-      <el-header>
+      <el-header id="globalheader">
         <Header></Header>
       </el-header>
 
@@ -16,6 +16,7 @@
         <Footer></Footer>
       </el-footer>
     </el-container>
+    <el-backtop :right="20" :bottom="20" />
   </div>
 </template>
 
@@ -58,14 +59,16 @@ export default {
     height: 56px;
     padding: 0px;
     backdrop-filter: blur(7px);
-
+    background-color: #FFFFFF;
   }
 
   .el-main {
     z-index: 1;
     width: 100%;
     height: 100%;
+    // min-height: calc(100vh - 416px);
     padding: 0 !important;
+    overflow: visible;
   }
 
   .el-footer {

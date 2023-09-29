@@ -1,37 +1,37 @@
 <template>
   <div class="about-box">
     <!-- header -->
-    <div class="header">
-      <img class="logo" src="../assets/images/logo_cn.png" alt="">
-      <div class="tips">
-        光生传媒作为业内领先的MCN机构，致力于不断建立标准化线下网红孵化管理基地，为直播与短视频全产业链开发等提供整合营销方案。目前拥有红人孵化、游戏发行、账号代运营、海外直播运营等主营业务。我们旨在成为基于艺⼈养成的在线娱乐内容提供商。
-      </div>
+    <div class="header animate__animated animate__fadeInUp" style="animation-duration: 2s;">
+      <img class="logo" :src="imageUrl + detail.image" alt="">
+      <div class="tips">{{ detail.editor }}</div>
     </div>
     <!-- 触达平台 -->
-    <div class="platform">
+    <div class="platform wow animate__animated animate__fadeInUpBig">
       <div class="icon-box">
         <div class="title">
-          <h3>触达平台</h3>
-          <p>光生传媒的直播和短视频业务触及广泛，包含抖音、快手、斗鱼、YouTube、Facebook等10个平台，致力于在众多平台发布符合平台调性的优质内容。</p>
+          <h3>{{ detail1.title }}</h3>
+          <p v-html="detail1.editor"></p>
         </div>
         <div class="logo-list">
-          <div class="box" v-for="item in logoList" :key="item">
-            <img :src="item.url" alt="">
-            <p class="name">{{ item.name }}</p>
+          <div class="box" v-for="(item, index) in detail1.children" :key="item">
+              <div class="fadea-transition" v-if="showIcon(index)">
+                <el-image :src="imageUrl + item.image" alt="" />
+                <p class="name">{{ item.title }}</p>
+              </div>
           </div>
         </div>
       </div>
     </div>
     <!-- 合作品牌 -->
-    <div class="co-brand">
+    <div class="co-brand wow animate__animated animate__fadeInUpBig">
       <div class="icon-box">
         <div class="title">
-          <h3>合作品牌</h3>
-          <p>优质合作伙伴<br />优质品牌与优质内容强强联合，发挥最大价值。</p>
+          <h3>{{ detail2.title }}</h3>
+          <p v-html="detail2.editor"></p>
         </div>
         <div class="logo-list1">
-          <div class="box" v-for="item in ocList" :key="item">
-            <img class="oc-img" :src="item" alt="">
+          <div class="box" v-for="(item, index) in detail2.children" :key="index">
+            <img class="oc-img fadea-transition" :src="imageUrl + item.image" alt="" v-if="showIcon1(index)">
           </div>
         </div>
       </div>
@@ -39,16 +39,20 @@
     <!-- 团队介绍 -->
     <div class="team-info">
       <swiper class="mySwiper" :autoHeight="true" :pagination="true" :modules="modules" @slideChange="change">
-        <swiper-slide v-for="item in teamList" :key="item">
-          <div class="background" :style="{ backgroundImage: `url(${teamList[team_index].url})` }"></div>
+        <swiper-slide v-for="item in detail3.children" :key="item">
+          <div class="background" :style="{ backgroundImage: `url(${imageUrl + item.image})` }"></div>
           <div class="team-item">
-            <h3>团队介绍</h3>
+            <h3>{{ detail3.title }}</h3>
             <div class="img">
-              <img :src="item.url" alt="">
+              <img :src="imageUrl + item.image" alt="">
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
             </div>
-            <p class="name">{{ item.name }}</p>
-            <p class="position">{{ item.position }}</p>
-            <p class="intro">{{ item.intro }}</p>
+            <div class="info">
+              <p class="name">{{ item.name }}</p>
+              <p class="position">{{ item.title_deputy }}</p>
+              <p class="intro">{{ item.editor }}</p>
+            </div>
           </div>
         </swiper-slide>
       </swiper>
@@ -57,19 +61,21 @@
     <div class="service">
       <div class="icon-box">
         <div class="title">
-          <h3>服务内容</h3>
-          <p>多项互通业务广泛涉及，各项专业操作推动发展。</p>
+          <h3>{{ detail4.title }}</h3>
+          <p>{{ detail4.editor }}</p>
         </div>
         <swiper class="myService" :navigation="true" :modules="modules">
-          <swiper-slide v-for="item in list1" :key="item">
+          <swiper-slide v-for="item in detail4.children" :key="item">
             <div class="service-item">
-              <img :src="item.url" alt="">
+              <img :src="imageUrl + item.image" alt="">
               <div>
-                <h2>电商直播</h2>
-                <p>拥有三大能力带动商品转化和品牌营销。保证人、货、场单方的严谨优质和三方的完美配合。运用真实专业的描述介绍产品，利用真诚生动的语言达成沟通。</p>
+                <h2>{{ item.title }}</h2>
+                <p>{{ item.editor }}</p>
               </div>
             </div>
           </swiper-slide>
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
         </swiper>
       </div>
     </div>
@@ -77,8 +83,8 @@
     <div class="company">
       <div class="icon-box">
         <div class="title">
-          <h3>公司地址</h3>
-          <p>光生传媒(北京)有限公司青岛分公司成立于 2020 年 11 月 25 日，注册地位于山东省青岛市李沧区巨峰路 176 号 5 号楼 609 - 617 房间。</p>
+          <h3>{{ detail5.title }}</h3>
+          <p>{{ detail5.editor }}</p>
         </div>
         <swiper class="myCompany" :slidesPerView="1" :spaceBetween="30" :modules="modules">
           <swiper-slide v-for="item in companyList" :key="item">
@@ -91,9 +97,9 @@
           <el-icon>
             <ArrowLeftBold />
           </el-icon>
-          <swiper :slidesPerView="[_isMobile ? 3 : 6]" :spaceBetween="30" @click="selectArea">
+          <swiper :slidesPerView="_isMobile ? 3 : 6" :spaceBetween="30" @click="selectArea">
             <swiper-slide v-for="(item, index) in cityList" :key="item">
-              <div :class="['area-item', index == cid ? 'area-active' : '']">{{ item }}</div>
+              <div :class="['area-item touch', index == cid ? 'area-active' : '']">{{ item }}</div>
             </swiper-slide>
           </swiper>
           <el-icon>
@@ -105,24 +111,24 @@
             <el-icon size="30" color="#111111">
               <Message />
             </el-icon>
-            <p class="tip">电子邮件</p>
-            <p class="info">vividtide@vividtide.com</p>
+            <p class="tip">{{ $t('other.E-Mail') }}</p>
+            <p class="info">{{ detail6.email }}</p>
           </div>
           <el-divider direction="vertical" />
           <div class="box">
             <el-icon size="30" color="#111111">
               <Phone />
             </el-icon>
-            <p class="tip">电话</p>
-            <p class="info">18562809966</p>
+            <p class="tip">{{ $t('other.Phone') }}</p>
+            <p class="info">{{ detail6.mobile }}</p>
           </div>
           <el-divider direction="vertical" />
           <div class="box">
             <el-icon size="30" color="#111111">
               <LocationInformation />
             </el-icon>
-            <p class="tip">地址</p>
-            <p class="info">青岛市李沧区巨峰路176-5号金水·信联天地5号楼</p>
+            <p class="tip">{{ $t('other.Address') }}</p>
+            <p class="info">{{ detail6.address }}</p>
           </div>
         </div>
       </div>
@@ -131,7 +137,7 @@
     <div class="contact">
       <div class="icon-box">
         <div class="title">
-          <h3>商务合作 & 签约咨询</h3>
+          <h3>{{ $t('other.Cooperation') }}</h3>
         </div>
         <div class="qrcode">
           <div class="box">
@@ -139,7 +145,7 @@
             <img src="../assets/images/qrcode1.png" alt="">
             <p>微信扫描二维码</p>
           </div>
-          <el-divider :direction="[_isMobile ? 'horizontal' : 'vertical']" />
+          <el-divider :direction="_isMobile ? 'horizontal' : 'vertical'" />
           <div class="box">
             <p>商务合作</p>
             <img src="../assets/images/qrcode1.png" alt="">
@@ -152,7 +158,9 @@
 </template>
 
 <script setup>
-import { ref, getCurrentInstance } from 'vue'
+import { WOW } from 'wowjs';
+import { get, imageUrl } from '../assets/js/request.js';
+import { ref, onMounted, getCurrentInstance, onUnmounted } from 'vue'
 // import Swiper core and required modules
 import { Navigation, Pagination } from "swiper/modules";
 
@@ -169,123 +177,43 @@ const modules = [
   Pagination
 ]
 
-// 判断设备
-const _isMobile = getCurrentInstance().appContext.config.globalProperties.$utils._isMobile();
+const _isMobile = getCurrentInstance().appContext.config.globalProperties.$utils._isMobile(); // 判断设备
 
-// 触达平台
-const logoList = [
-  {
-    name: "抖音",
-    url: require('../assets/images/icons/douyin.png')
-  },
-  {
-    name: "斗鱼",
-    url: require('../assets/images/icons/douyu.png')
-  },
-  {
-    name: "虎牙",
-    url: require('../assets/images/icons/huya.png')
-  },
-  {
-    name: "淘宝",
-    url: require('../assets/images/icons/taobao.png')
-  },
-  {
-    name: "快手",
-    url: require('../assets/images/icons/kuaishou.png')
-  },
-  {
-    name: "Facebook",
-    url: require('../assets/images/icons/facebook.png')
-  },
-  {
-    name: "Facebook",
-    url: require('../assets/images/icons/facebook.png')
-  },
-  {
-    name: "Facebook",
-    url: require('../assets/images/icons/facebook.png')
-  },
-];
+onMounted(() => {
+  new WOW().init();
+  getAbout();
+  window.addEventListener("scroll", handleScroll);
+})
 
-// 合作品牌
-const ocList = [
-  require('../assets/images/brand1.png'),
-  require('../assets/images/brand2.png'),
-  require('../assets/images/brand3.png'),
-  require('../assets/images/brand4.png'),
-  require('../assets/images/brand5.png'),
-  require('../assets/images/brand6.png'),
-  require('../assets/images/brand6.png'),
-];
+
+// 关于
+let detail = ref({});
+let detail1 = ref({});
+let detail2 = ref({});
+let detail3 = ref({});
+let detail4 = ref({});
+let detail5 = ref({});
+let detail6 = ref({});
+const getAbout = () => {
+  get('index/about', {
+    store_id: localStorage.getItem('key') || 1,
+  }).then(res => {
+    console.log(res);
+    detail.value = res.data[0];
+    detail1.value = res.data[1];
+    detail2.value = res.data[2];
+    detail3.value = res.data[3];
+    detail4.value = res.data[4];
+    detail5.value = res.data[5];
+    detail6.value = res.data[6];
+  })
+}
 
 // 团队介绍
 const team_index = ref(0);
-
-const teamList = [
-  {
-    url: require('../assets/images/avatar1.png'),
-    name: "梁娅婷",
-    position: "艺人经纪部主管",
-    intro: "新媒体从业时间 4 年，曾就职于抖音平台前十 MCN 机构。月个人招募量达到 50 人以上，旗下主播月流水达到 50 万以上。视频包放量 200 万以上，与小米、海信等品牌长期合作。"
-  },
-  {
-    url: require('../assets/images/avatar2.png'),
-    name: "梁娅婷",
-    position: "艺人经纪部主管",
-    intro: "新媒体从业时间 4 年，曾就职于抖音平台前十 MCN 机构。月个人招募量达到 50 人以上，旗下主播月流水达到 50 万以上。视频包放量 200 万以上，与小米、海信等品牌长期合作。"
-  },
-  {
-    url: require('../assets/images/avatar3.png'),
-    name: "梁娅婷",
-    position: "艺人经纪部主管",
-    intro: "新媒体从业时间 4 年，曾就职于抖音平台前十 MCN 机构。月个人招募量达到 50 人以上，旗下主播月流水达到 50 万以上。视频包放量 200 万以上，与小米、海信等品牌长期合作。"
-  },
-];
-
 const change = (index) => {
-  console.log(index.activeIndex);
   team_index.value = index.activeIndex;
 }
-
-// 服务内容
-import image4 from "../assets/images/image4.png";
-import image5 from "../assets/images/image5.png";
-import image6 from "../assets/images/image6.png";
-const list1 = [
-  {
-    url: image4,
-    name: '@侯阳靖雯',
-    play_num: 2.3,
-    like: 10.9,
-    info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-    id: 1744176865
-  },
-  {
-    url: image5,
-    name: '@侯阳靖雯',
-    play_num: 2.3,
-    like: 10.9,
-    info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-    id: 1744176865
-  },
-  {
-    url: image6,
-    name: '@侯阳靖雯',
-    play_num: 2.3,
-    like: 10.9,
-    info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-    id: 1744176865
-  },
-  {
-    url: image4,
-    name: '@侯阳靖雯',
-    play_num: 2.3,
-    like: 10.9,
-    info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-    id: 1744176865
-  },
-]
 
 // 公司地址
 const companyList = [
@@ -306,8 +234,6 @@ const companyList = [
   }
 ]
 
-const cid = ref(0);
-
 const cityList = [
   '北京',
   '青岛',
@@ -318,13 +244,77 @@ const cityList = [
   '广州',
 ]
 
+
+const cid = ref(0);
 const selectArea = (index) => {
   console.log(index);
   cid.value = index.clickedIndex;
 }
+
+// 触达平台
+let visibleIcons = ref([]);
+const showIcon = (index) => {
+  return visibleIcons.value.indexOf(index) != -1;
+}
+
+const fadeShow = () => {
+  let index = ref(0);
+  // 使用定时器逐个显示图标
+  let interval = setInterval(() => {
+    if (index.value >= detail1.value.children.length) {
+      clearInterval(interval);
+      return;
+    }
+    visibleIcons.value.push(index.value);
+    index.value++;
+  }, 300); // 间隔200ms显示一个图标
+}
+
+// 合作品牌
+let visibleIcons1 = ref([]);
+const showIcon1 = (index) => {
+  return visibleIcons.value.indexOf(index) != -1;
+}
+
+const fadeShow1 = () => {
+  let index = ref(0);
+  // 使用定时器逐个显示图标
+  let interval = setInterval(() => {
+    if (index.value >= detail2.value.children.length) {
+      clearInterval(interval);
+      return;
+    }
+    visibleIcons1.value.push(index.value);
+    index.value++;
+  }, 500); // 间隔200ms显示一个图标
+}
+
+
+
+const handleScroll = () => {
+  const scrollTop = document.documentElement.scrollTop;
+  console.log(scrollTop);
+  if (scrollTop >= 600) {
+    fadeShow();
+  }
+  if (scrollTop >= 1600) {
+    fadeShow1();
+  }
+}
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
+})
 </script>
 
 <style lang="scss" scoped>
+.fadea-transition {
+  opacity: 1;
+  /* 初始状态为透明 */
+  transition: opacity 0.5s;
+  /* 过渡效果，持续时间为0.5秒 */
+}
+
 .about-box {
   width: 100%;
   height: 100%;
@@ -334,6 +324,7 @@ const selectArea = (index) => {
     flex-direction: row;
     align-items: center;
     width: 50%;
+    height: 100vh;
     padding: 1.5rem 0;
     margin: 0 auto;
 
@@ -356,8 +347,22 @@ const selectArea = (index) => {
 
   .platform {
     width: 100%;
+    min-height: 100vh;
     height: 100%;
     background-color: #FBFBFD;
+  }
+
+  .fadea-transition {
+    opacity: 1;
+    /* 初始状态为透明 */
+    transition: opacity 0.5s;
+    /* 过渡效果，持续时间为0.5秒 */
+  }
+
+  .fadea-enter-active,
+  .fadea-leave-active {
+    opacity: 0;
+    /* 动画激活时的最终状态，完全显示 */
   }
 
   .icon-box {
@@ -365,7 +370,7 @@ const selectArea = (index) => {
     flex-direction: column;
     align-items: center;
     width: 60%;
-    padding: .67rem 0 .5rem;
+    padding: .9rem;
     margin: 0 auto;
 
     .title {
@@ -421,14 +426,15 @@ const selectArea = (index) => {
       grid-gap: 60px;
 
       .oc-img {
-        width: 0.5rem;
-        height: 0.31rem;
+        width: 0.6rem;
+        height: 0.4rem;
       }
     }
   }
 
   .co-brand {
     width: 100%;
+    min-height: 100vh;
   }
 
   .team-info {
@@ -436,12 +442,13 @@ const selectArea = (index) => {
     height: 100%;
 
     .mySwiper {
+      position: relative;
       width: 100%;
       height: 100%;
 
       .swiper-slide {
         position: relative;
-        height: 920px;
+        height: 100vh;
       }
 
       .background {
@@ -463,8 +470,9 @@ const selectArea = (index) => {
       left: 0;
       top: 0;
       width: 100%;
-      height: 920px;
-      padding: 0.625rem 0;
+      height: 100vh;
+      padding-top: 20vh;
+      // padding: 0.625rem 0;
       text-align: center;
       box-sizing: content-box !important;
 
@@ -476,7 +484,18 @@ const selectArea = (index) => {
       }
 
       .img {
+        position: relative;
         margin-top: .3125rem;
+
+        :deep(.swiper-button-prev) {
+          left: var(--swiper-navigation-sides-offset, 38%);
+          color: #FFFFFF;
+        }
+
+        :deep(.swiper-button-next) {
+          right: var(--swiper-navigation-sides-offset, 38%);
+          color: #FFFFFF;
+        }
 
         img {
           width: 240px;
@@ -518,12 +537,12 @@ const selectArea = (index) => {
     height: 100%;
 
     .myService {
-      width: 70%;
+      width: 100%;
       height: 100%;
-      margin: 0 30px;
+      padding: 0 30px;
 
       .swiper-slide {
-        width: 100%;
+        width: 100% !important;
       }
 
       .service-item {
@@ -596,9 +615,12 @@ const selectArea = (index) => {
       align-items: center;
       justify-content: space-between;
       width: 90%;
-      padding: 20px 0;
       margin: 0 auto;
       border-bottom: 1px solid rgba(17, 17, 17, 0.15);
+
+      .swiper {
+        padding: 20px;
+      }
 
       .area-item {
         width: 84px;
@@ -636,7 +658,7 @@ const selectArea = (index) => {
       flex-direction: row;
       justify-content: space-around;
       width: 100%;
-      padding: 60px 60px 0;
+      padding-top: 60px;
 
       .el-divider {
         width: 1px;
@@ -715,11 +737,18 @@ const selectArea = (index) => {
   .about-box {
     .header {
       width: 100%;
-      padding: 30px 20px;
+      height: 100%;
+      padding: 30px 30px 60px;
       flex-direction: column;
     }
 
-    // .platform {}8
+    .platform {
+      min-height: auto !important;
+    }
+
+    .co-brand {
+      min-height: auto !important;
+    }
 
     .icon-box {
       width: 100%;
@@ -730,7 +759,7 @@ const selectArea = (index) => {
       }
 
       .logo-list {
-        grid-template-columns: repeat(4, .6rem);
+        grid-template-columns: repeat(4, .55rem);
         grid-gap: 25px;
       }
 
@@ -745,6 +774,18 @@ const selectArea = (index) => {
     }
 
     .team-item {
+
+      .info {
+        transition: opacity 0.5s ease;
+      }
+
+      :deep(.swiper-button-prev) {
+        display: none !important;
+      }
+
+      :deep(.swiper-button-next) {
+        display: none !important;
+      }
 
       .name {
         margin-top: 60px !important;
@@ -781,8 +822,7 @@ const selectArea = (index) => {
     .company {
       .company-item {
         &>img {
-          width: 100%;
-          border-radius: 14px;
+          height: 180px !important;
         }
       }
 

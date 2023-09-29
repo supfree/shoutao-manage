@@ -2,13 +2,13 @@
     <div class="live">
         <!-- banner -->
         <div class="banner">
-            <img class="bg" src="../assets/images/banner-item1.png" alt="">
+            <img class="bg" :src="imageUrl + detail.image" alt="">
             <div class="banner-op">
-                <img src="../assets/images/font1.svg" alt="">
-                <p class="btn-play">观看视频<el-icon>
+                <img class="animate__animated animate__tada" src="../assets/images/font1.svg" alt="">
+                <p class="btn-play">{{ $t('other.Watch-video') }}<el-icon>
                         <VideoPlay />
                     </el-icon></p>
-                <p class="btn-link">了解达人<el-icon>
+                <p class="btn-link">{{ $t('other.Information') }}<el-icon>
                         <ArrowRight />
                     </el-icon></p>
             </div>
@@ -16,28 +16,29 @@
         <!-- gird-img -->
         <div class="gird-img">
             <div class="img-item">
-                <img class="bg" src="../assets/images/banner-item1.png" alt="">
+                <img class="bg" :src="imageUrl + detail1.image" alt="">
                 <div class="banner-op">
-                    <img src="../assets/images/font2.svg" alt="">
+                    <img class="wow animate__animated animate__flash" src="../assets/images/font2.svg" alt="">
                     <div>
-                        <p class="btn-play mr15">观看视频<el-icon>
+                        <p class="btn-play mr15">{{ $t('other.Watch-video') }}<el-icon>
                                 <VideoPlay />
                             </el-icon></p>
-                        <p class="btn-link">了解达人<el-icon>
+                        <p class="btn-link">{{ $t('other.Information') }}<el-icon>
                                 <ArrowRight />
                             </el-icon></p>
                     </div>
                 </div>
             </div>
             <div class="img-item">
-                <img class="bg" src="../assets/images/swiper/swiper.png" alt="">
+                <img class="bg" :src="imageUrl + detail2.image" alt="">
                 <div class="banner-op">
-                    <img src="../assets/images/font3.svg" style="zoom: 1;" alt="">
+                    <img class="wow animate__animated animate__flash" src="../assets/images/font3.svg" style="zoom: 1;"
+                        alt="">
                     <div>
-                        <p class="btn-play mr15">观看视频<el-icon>
+                        <p class="btn-play mr15">{{ $t('other.Watch-video') }}<el-icon>
                                 <VideoPlay />
                             </el-icon></p>
-                        <p class="btn-link">了解达人<el-icon>
+                        <p class="btn-link">{{ $t('other.Information') }}<el-icon>
                                 <ArrowRight />
                             </el-icon></p>
                     </div>
@@ -48,86 +49,92 @@
         <div class="live-box">
             <div class="box">
                 <div class="header">
-                    <h3>最新直播</h3>
+                    <h3>{{ $t('other.Recently-live') }}</h3>
                     <div class="tab">
-                        <div :class="[index == l_id ? 'active' : '']" v-for="(item, index) in tabs" :key="index"
+                        <div :class="[index == lid ? 'active' : '']" v-for="(item, index) in tabs" :key="index"
                             @click="changeLive(index)">
                             {{ item.name }}
                         </div>
                     </div>
                 </div>
-                <div class="live-list">
-                    <Card :item="item" v-for="item in list" :key="item"></Card>
+                <div v-if="list.length">
+                    <div class="live-list">
+                        <Card :item="item" v-for="item in list" :key="item"></Card>
+                    </div>
+                    <div class="load-box" @click="getMoreList">{{ $t('other.Load-more') }}</div>
                 </div>
-                <div class="load-box">加载更多</div>
+                <el-empty :image-size="200" v-else />
             </div>
         </div>
+
+        <swiper :direction="'vertical'" :pagination="{
+            clickable: true,
+        }" :modules="modules">
+            <swiper-slide v-for="item in list" :key="item">
+                <Card :item="item"></Card>
+            </swiper-slide>
+        </swiper>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { get, imageUrl } from '../assets/js/request.js';
+import { ref, getCurrentInstance, onMounted } from 'vue';
 import Card from "@/components/Card.vue";
-
-import image1 from "../assets/images/image1.png";
-import image2 from "../assets/images/image2.png";
-import image3 from "../assets/images/image3.png";
-
-// 选择
-const l_id = ref(0)
-
+const { proxy } = getCurrentInstance();
 const tabs = [
     {
-        name: '全部',
+        name: proxy.$t('other.All'),
         active: true
     },
     {
-        name: '娱乐直播'
+        name: proxy.$t('other.Entertainment-talent')
     },
     {
-        name: '电商直播'
+        name: proxy.$t('other.E-commerce-talent')
     }
 ]
 
+onMounted(() => {
+    getBroadcast('refresh');
+})
+
+// 导航index
+const lid = ref(0);
 const changeLive = (index) => {
-    console.log(index);
-    l_id.value = index;
+    lid.value = index;
+    page.value = 1;
+    getBroadcast('refresh');
 }
 
-const list = [
-    {
-        url: image1,
-        name: '@侯阳靖雯',
-        play_num: 2.3,
-        like: 10.9,
-        info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-        id: 1744176865
-    },
-    {
-        url: image2,
-        name: '@侯阳靖雯',
-        play_num: 2.3,
-        like: 10.9,
-        info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-        id: 1744176865
-    },
-    {
-        url: image3,
-        name: '@侯阳靖雯',
-        play_num: 2.3,
-        like: 10.9,
-        info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-        id: 1744176865
-    },
-    {
-        url: image1,
-        name: '@侯阳靖雯',
-        play_num: 2.3,
-        like: 10.9,
-        info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-        id: 1744176865
-    },
-]
+// 获取直播列表
+const page = ref(1);
+const list = ref([]);
+let detail = ref({});
+let detail1 = ref({});
+let detail2 = ref({});
+const getBroadcast = (status) => {
+    get('index/broadcast', {
+        store_id: localStorage.getItem('key') || 1,
+        type: lid.value,
+        page: page.value
+    }).then(res => {
+        console.log(res);
+        if (status == 'refresh') {
+            list.value = res.data[1];
+        } else {
+            list.value = list.value.concat(res.data[1]);
+        }
+        detail = res.data[0].children[0];
+        detail1 = res.data[0].children[1];
+        detail2 = res.data[0].children[2];
+    })
+}
+
+const getMoreList = () => {
+    page.value = page.value + 1;
+    getBroadcast();
+}
 </script>
 
 <style lang="scss" scoped>
@@ -139,7 +146,7 @@ const list = [
         z-index: 1;
         position: relative;
         width: 100%;
-        height: 920px;
+        height: calc(100vh - 56px);
 
         .bg {
             position: absolute;
@@ -276,6 +283,7 @@ const list = [
                 flex-direction: row;
                 justify-content: space-between;
                 width: 100%;
+                background-color: #FFFFFF;
 
                 h3 {
                     font-size: 36px;
@@ -322,6 +330,10 @@ const list = [
             display: block !important;
         }
     }
+
+    .ent-item {
+        height: 100vh !important;
+    }
 }
 
 
@@ -358,7 +370,9 @@ const list = [
                 flex-direction: column !important;
 
                 .tab {
+                    width: 100%;
                     margin-top: 20px;
+                    overflow-x: scroll;
                 }
             }
 
@@ -372,8 +386,12 @@ const list = [
 
 @media only screen and (max-width: 1120px) {
     .live-list {
-        grid-template-columns: repeat(2, 50%) !important;
+        grid-template-columns: repeat(2, 45%) !important;
         grid-gap: 50px !important;
+    }
+
+    .ent-item {
+        height: 600px;
     }
 }
 </style>

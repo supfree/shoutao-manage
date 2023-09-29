@@ -2,19 +2,19 @@
     <div class="master">
         <!-- banner -->
         <div class="banner">
-            <img class="bg" src="../assets/images/bg-master.png" alt="">
+            <img class="bg" :src="imageUrl + detail.image" alt="">
             <div class="info">
-                <img src="../assets/images/font3.png" alt="">
-                <div>
-                    <h2>聂雨彤</h2>
+                <img class="animate__animated animate__fadeInLeft" src="../assets/images/font3.png" alt="">
+                <div class="animate__animated animate__fadeInUp" style="animation-duration: 3s;">
+                    <h2>{{ detail.name }}</h2>
                     <p class="tip">
                         <span class="span1">全网粉丝</span>
-                        <span class="span2">96万</span> | <span class="span1">全网获赞</span>
-                        <span class="span2">1.1亿</span>
+                        <span class="span2">{{ detail.fans }}</span> | <span class="span1">全网获赞</span>
+                        <span class="span2">{{ detail.like }}</span>
                     </p>
-                    <p class="intro">聂雨彤1992年出生于中华人民共和国湖南省岳阳市。他曾就读于岳阳学院路小学和岳阳中学。小时候，聂雨彤就对化妆感到喜爱。</p>
+                    <p class="intro">{{ detail.editor }}</p>
                     <p class="btn-link">
-                        了解达人
+                        {{ $t('other.Information') }}
                         <el-icon>
                             <ArrowRight />
                         </el-icon>
@@ -27,103 +27,99 @@
         <div class="live-box">
             <div class="box">
                 <div class="header">
-                    <h3>达人列表</h3>
+                    <h3>{{ $t('main.List-of-talents') }}</h3>
                     <el-affix :offset="[_isMobile ? 120 : 0]">
                         <div class="tab">
-                            <div :class="[index == l_id ? 'active' : '']" v-for="(item, index) in tabs" :key="index"
+                            <div :class="[index == lid ? 'active' : '']" v-for="(item, index) in tabs" :key="index"
                                 @click="changeLive(index)">
                                 {{ item.name }}
                             </div>
                         </div>
                     </el-affix>
                 </div>
-                <div class="live-list">
-                    <Card :item="item" :icon="false" v-for="item in list" :key="item"></Card>
+                <div v-if="list.length">
+                    <div class="live-list">
+                        <Card :item="item" :icon="false" v-for="item in list" :key="item"></Card>
+                    </div>
+                    <div class="load-box" @click="getMoreList">{{ $t('other.Load-more') }}</div>
                 </div>
-                <div class="load-box">加载更多</div>
+                <el-empty :image-size="200" v-else />
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, getCurrentInstance } from 'vue';
+import { get, imageUrl } from '../assets/js/request.js';
+import { ref, getCurrentInstance, onMounted } from 'vue';
 import Card from "@/components/Card.vue";
-
-import image1 from "../assets/images/image1.png";
-import image2 from "../assets/images/image2.png";
-import image3 from "../assets/images/image3.png";
-
-// 判断设备
-const _isMobile = getCurrentInstance().appContext.config.globalProperties.$utils._isMobile();
-console.log(_isMobile);
-// 选择
-const l_id = ref(0)
-
+const _isMobile = getCurrentInstance().appContext.config.globalProperties.$utils._isMobile(); // 判断设备
+const { proxy } = getCurrentInstance();
 const tabs = [
     {
-        name: '全部',
+        name: proxy.$t('other.All'),
         active: true
     },
     {
-        name: '娱乐达人'
+        name: proxy.$t('other.Entertainment-talent')
     },
     {
-        name: '电商达人'
+        name: proxy.$t('other.E-commerce-talent')
     }
 ]
 
+onMounted(() => {
+    getArtist('refresh');
+})
+
+// 导航index
+const lid = ref(0);
 const changeLive = (index) => {
-    console.log(index);
-    l_id.value = index;
+    lid.value = index;
+    getArtist('refresh');
 }
 
-const list = [
-    {
-        url: image1,
-        name: '@侯阳靖雯',
-        play_num: 2.3,
-        like: 10.9,
-        info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-        id: 1744176865
-    },
-    {
-        url: image2,
-        name: '@侯阳靖雯',
-        play_num: 2.3,
-        like: 10.9,
-        info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-        id: 1744176865
-    },
-    {
-        url: image3,
-        name: '@侯阳靖雯',
-        play_num: 2.3,
-        like: 10.9,
-        info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-        id: 1744176865
-    },
-    {
-        url: image1,
-        name: '@侯阳靖雯',
-        play_num: 2.3,
-        like: 10.9,
-        info: '笑出腹肌又嗨到爆，看我怎么在泰国,笑出腹肌又嗨到爆，看我怎么在泰国',
-        id: 1744176865
-    },
-]
+// 获取直播列表
+const page = ref(1);
+const list = ref([]);
+const detail = ref({});
+const getArtist = (status) => {
+    get('index/artist', {
+        store_id: localStorage.getItem('key') || 1,
+        type: lid.value,
+        page: page.value
+    }).then(res => {
+        // console.log(res);
+        console.log(status, status == 'refresh');
+        if (status == 'refresh') {
+            // list.value = [];
+            list.value = res.data[1];
+        } else {
+            list.value = list.value.concat(res.data[1]);
+        }
+        detail.value = res.data[0];
+    })
+}
+
+const getMoreList = () => {
+    page.value = page.value + 1;
+    getArtist();
+}
 </script>
 
 <style lang="scss" scoped>
 .master {
+    position: relative;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+
 
     .banner {
         z-index: 1;
         position: relative;
         width: 100%;
-        height: 740px;
+        height: calc(100vh - 56px);
 
 
         .bg {
@@ -223,6 +219,7 @@ const list = [
                 display: flex;
                 align-items: center;
                 flex-direction: row;
+                align-self: flex-start;
                 justify-content: space-between;
                 width: 100%;
                 background-color: #FFFFFF;
@@ -258,7 +255,7 @@ const list = [
 
             .live-list {
                 display: grid;
-                grid-template-columns: repeat(3, 33%);
+                grid-template-columns: repeat(3, 32%);
                 grid-gap: 30px;
                 width: 100%;
                 margin-top: 60px;

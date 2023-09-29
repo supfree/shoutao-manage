@@ -19,4 +19,15 @@ module.exports = defineConfig({
   //     },
   //   }
   // }
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'https://gs.rc0534.com/api/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    }
+  }
 });

@@ -2,38 +2,33 @@
     <div class="container">
         <!-- 加入1 -->
         <div class="join-one">
-            <div class="btn-join">达人应聘</div>
-            <div class="color-font">
-                加入光生，
-                <br />在工作中互相成就。
-            </div>
-            <p>这里有丰富的资源和注重包容、成长和独创性的协作文化，，助你缔造精彩人生。</p>
+            <div class="btn-join">{{ detail.button_name }}</div>
+            <div class="color-font" v-html="detail.title"></div>
+            <p v-html="detail.title_deputy"></p>
         </div>
         <!-- banner内容1 -->
         <div class="banner-box">
-            <img src="../assets/images/swiper/swiper.png" alt="">
-            <div class="title">在这里，你可以尽情地展现自我，不断实现成</div>
+            <img :src="imageUrl + detail.image" alt="">
+            <div class="title wow animate__animated animate__fadeInUp animate__delay-0.5s" v-html="detail.editor"></div>
             <div class="info-item">
                 <div class="icon">
                     <el-icon class="icon-play touch" size="30" color="#FFFFFF">
                         <VideoPlay />
                     </el-icon>
-                    <div class="name">观看影片</div>
+                    <div class="name">{{ $t('other.Watch-video') }}</div>
                 </div>
             </div>
         </div>
         <!-- 加入2 -->
         <div class="join-one">
-            <div class="btn-join">达人应聘</div>
-            <div class="color-font1">
-                加入我们，<br />共同创造我们的社区。
-            </div>
-            <p>探索我们的工作领域、全球工作地点，<br />以及为学生提供的工作机会。</p>
+            <div class="btn-join">{{ detail1.button_name }}</div>
+            <div class="color-font1" v-html="detail1.title"></div>
+            <p v-html="detail.title_deputy"></p>
         </div>
         <!-- banner内容2 -->
         <div class="banner-box">
-            <img src="../assets/images/swiper/swiper.png" alt="">
-            <div class="title">在这里，你可以尽情地展现自我，不断实现成长和发展。</div>
+            <img :src="imageUrl + detail1.image" alt="">
+            <div class="title wow animate__animated animate__fadeInUp animate__delay-0.5s" v-html="detail1.editor"></div>
             <div class="info-item">
                 <div class="icon">
                     <el-icon class="icon-play touch" size="30" color="#FFFFFF">
@@ -58,15 +53,15 @@
 
         <!-- 投递简历 -->
         <div class="deliver">
-            <img class="logo" src="../assets/logo.png" alt="">
-            <h2>加入我们，展现自我</h2>
-            <p>你不需要很厉害才能开始，但你需要开始才能变得很厉害。寻找非同凡响的你，我们欢迎真实的你，以及你想成为的自己。</p>
+            <img class="logo" :src="imageUrl + detail3.image" alt="">
+            <h2 v-html="detail3.title"></h2>
+            <p v-html="detail3.editor"></p>
             <div class="input-box">
-                <el-input size="large" placeholder="姓名" />
-                <el-input size="large" placeholder="邮箱" />
-                <el-input v-model="textarea" :rows="5" type="textarea" placeholder="详情" />
+                <el-input size="large" v-model="form.name" placeholder="姓名" />
+                <el-input size="large" v-model="form.email" placeholder="邮箱" />
+                <el-input v-model="form.textarea" :rows="5" type="textarea" placeholder="详情" />
             </div>
-            <el-button class="btn-push" size="large" round>投递简历</el-button>
+            <el-button class="btn-push" size="large" round @click="submit">投递简历</el-button>
             <el-divider>或</el-divider>
             <img class="qrcode" src="../assets/images/qrcode1.png" alt="">
             <p class="mt30">微信扫描二维码查看其他职位</p>
@@ -75,6 +70,10 @@
 </template>
   
 <script setup>
+import { WOW } from 'wowjs';
+import { ElMessage } from 'element-plus';
+import { get, imageUrl } from '../assets/js/request.js';
+import { ref, onMounted, reactive } from 'vue';
 // import Swiper core and required modules
 import { Navigation } from "swiper/modules";
 
@@ -90,20 +89,81 @@ const modules = [
     Navigation,
 ];
 
+let form = reactive({
+    name: '',
+    email: '',
+    textarea: ''
+})
+
+
 console.log(modules);
 
-// const modules1 = [
-//   Navigation,
-//   Pagination,
-//   Mousewheel
-// ];
+onMounted(() => {
+    new WOW().init();
+    getJoinInfo();
+})
 
-// const swiperOptions = {
-//   pagination: {
-//     nextEl: ".button-next",
-//     prevEl: ".button-prev",
-//   },
-// }
+// 加入我们
+const detail = ref({});
+const detail1 = ref({});
+const detail2 = ref({});
+const detail3 = ref({});
+const getJoinInfo = () => {
+    get('index/join', {
+        store_id: localStorage.getItem('key') || 1,
+    }).then(res => {
+        console.log(res, imageUrl);
+        detail.value = res.data[0];
+        detail1.value = res.data[1];
+        detail2.value = res.data[2];
+        detail3.value = res.data[3];
+    })
+}
+
+const submit = () => {
+    console.log(form);
+    if (!form.name) {
+        ElMessage({
+            message: '请输入姓名',
+            type: 'info',
+        });
+        return
+    }
+    if (!form.email) {
+        ElMessage({
+            message: '请输入邮箱',
+            type: 'info',
+        });
+        return
+    }
+    if (!form.textarea) {
+        ElMessage({
+            message: '请输入详情',
+            type: 'info',
+        });
+        return
+    }
+    get('index/submitVitae', {
+        store_id: localStorage.getItem('key') || 1,
+        name: form.name,
+        email: form.email,
+        details: form.textarea,
+    }).then(res => {
+        if (res.code == 1) {
+            ElMessage({
+                message: '提交成功',
+                type: 'success',
+            });
+        } else {
+            ElMessage({
+                message: res.msg,
+                type: 'error',
+            });
+        }
+    })
+}
+
+
 
 </script>
   
@@ -130,7 +190,7 @@ console.log(modules);
         border-radius: 4px;
         border: 2px solid #000;
         color: #000;
-        font-size: .0833rem;
+        font-size: 14px;
         cursor: pointer;
     }
 
@@ -187,7 +247,7 @@ console.log(modules);
         width: 50%;
         line-height: 1.6;
         text-align: left;
-        font-size: .2813rem;
+        font-size: .2813rem !important;
         font-weight: bold;
         letter-spacing: 0.03em;
         color: rgba(255, 255, 255, 0.9);
@@ -244,7 +304,7 @@ console.log(modules);
     }
 
     h2 {
-        margin: 20px 0 10px;
+        margin: 20px 0;
         font-size: 0.3rem;
         font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
         font-weight: bold;

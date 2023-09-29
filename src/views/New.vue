@@ -1,64 +1,80 @@
 <template>
     <div class="new">
         <div class="box">
-            <div class="title">最近新闻</div>
-            <div class="long item-box" :span="24">
-                <img src="../assets/images/banner-item1.png" alt="">
+            <div class="title">{{ $t('main.Hot-news') }}</div>
+            <div :class="['item-box animate__animated', item.class, 'item' + index]" :span="item.num"
+                v-for="(item, index) in list.list" :key="index" @click="goInfo(item.id)">
+                <img :src="imageUrl + item.image1" alt="">
                 <div class="item-info">
-                    <h2>光生传媒日本官网正式上线</h2>
-                    <p class="intro">光生传媒日本官网现已正式上线，可通过访问 www.vividtide.com/jp 浏览日本地区网站。</p>
-                    <p class="date">5 月 11 日</p>
+                    <h2 class="u-line-1">{{ item.name }}</h2>
+                    <p class="intro u-line-2">{{ item.title_deputy }}</p>
+                    <p class="date">{{ item.date }}</p>
                 </div>
             </div>
-            <div class="double-box">
-                <div class="short item-box" :span="11">
-                    <img src="../assets/images/banner-item1.png" alt="">
-                    <div class="item-info">
-                        <h2>光生传媒日本官网正式上线</h2>
-                        <p class="intro">光生传媒日本官网现已正式上线，可通过访问 www.vividtide.com/jp 浏览日本地区网站。</p>
-                        <p class="date">5 月 11 日</p>
-                    </div>
-                </div>
-                <div class="short item-box" :span="11">
-                    <img src="../assets/images/banner-item1.png" alt="">
-                    <div class="item-info">
-                        <h2>光生传媒日本官网正式上线</h2>
-                        <p class="intro">光生传媒日本官网现已正式上线，可通过访问 www.vividtide.com/jp 浏览日本地区网站。</p>
-                        <p class="date">5 月 11 日</p>
-                    </div>
-                </div>
-            </div>
-            <div class="long item-box" :span="24">
-                <img src="../assets/images/banner-item1.png" alt="">
-                <div class="item-info">
-                    <h2>光生传媒日本官网正式上线</h2>
-                    <p class="intro">光生传媒日本官网现已正式上线，可通过访问 www.vividtide.com/jp 浏览日本地区网站。</p>
-                    <p class="date">5 月 11 日</p>
-                </div>
-            </div>
-            <div class="double-box">
-                <div class="short item-box" :span="11">
-                    <img src="../assets/images/banner-item1.png" alt="">
-                    <div class="item-info">
-                        <h2>光生传媒日本官网正式上线</h2>
-                        <p class="intro">光生传媒日本官网现已正式上线，可通过访问 www.vividtide.com/jp 浏览日本地区网站。</p>
-                        <p class="date">5 月 11 日</p>
-                    </div>
-                </div>
-                <div class="short item-box" :span="11">
-                    <img src="../assets/images/banner-item1.png" alt="">
-                    <div class="item-info">
-                        <h2>光生传媒日本官网正式上线</h2>
-                        <p class="intro">光生传媒日本官网现已正式上线，可通过访问 www.vividtide.com/jp 浏览日本地区网站。</p>
-                        <p class="date">5 月 11 日</p>
-                    </div>
-                </div>
-            </div>
-            <div class="load-box">加载更多</div>
+            <div class="load-box">{{ $t('other.Load-more') }}</div>
         </div>
     </div>
 </template>
+<script setup>
+import { WOW } from 'wowjs';
+import { get, imageUrl } from '../assets/js/request.js';
+import { onMounted, onUnmounted, ref, reactive } from 'vue';
+import { useRouter } from "vue-router";
+const router = useRouter();
 
+onMounted(() => {
+    new WOW().init();
+    getNewList();
+    window.addEventListener("scroll", handleScroll);
+})
+
+const handleScroll = (() => {
+    const box = document.querySelector('.item3');
+    const scrollTop = document.documentElement.scrollTop;
+    if (scrollTop >= 400) {
+        box.classList.remove('hidden');
+        box.classList.add('animate__fadeInUp', 'show');
+    }
+})
+
+
+const page = ref(1);
+const list = reactive({ list: [] });
+const getNewList = () => {
+    get('index/news', {
+        store_id: localStorage.getItem('key') || 1,
+        page: page.value
+    }).then(res => {
+        list.list = res.data;
+
+        list.list.map((item, index) => {
+            // item.date = new Date(item.date);
+            if (index % 3 == 0) {
+                item.num = 24;
+                item.class = 'long item-box';
+            } else {
+                item.num = 11;
+                item.class = 'short';
+            }
+
+            if (index % 3 == 1) {
+                item.class = 'short item-box mr30';
+            }
+            item.image1 = item.image.split(',')[0] || [];
+        })
+        console.log(list);
+    })
+}
+
+const goInfo = (e) => {
+    console.log(e);
+    router.push({ path: '/detail', query: { id: e } })
+}
+
+onUnmounted(() => {
+    window.removeEventListener("scroll", handleScroll);
+})
+</script>
 <style scoped lang="scss">
 .new {
     width: 100%;
@@ -66,6 +82,8 @@
     background-color: #FBFBFD;
 
     .box {
+        display: flex;
+        flex-wrap: wrap;
         width: 51%;
         margin: 0 auto;
         padding: 0.52rem 0;
@@ -159,6 +177,10 @@
     .new {
         .box {
             width: 90%;
+
+            &>div {
+                margin-right: 0 !important;
+            }
         }
 
         .title {
@@ -168,11 +190,17 @@
 
         .long {
             width: 100%;
+        }
 
+        .item-box {
             img {
                 width: 100%;
                 height: 180px;
             }
+        }
+
+        .double-box {
+            margin-bottom: 0 !important;
         }
 
         .short {

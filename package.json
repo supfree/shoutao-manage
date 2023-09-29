@@ -1,5 +1,5 @@
 {
-  "name": "gscm-pc",
+  "name": "gscm",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,12 +9,16 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "animate.css": "^4.1.1",
+    "axios": "^1.5.0",
     "core-js": "^3.8.3",
     "element-plus": "^2.3.12",
     "lib-flexible": "^0.3.2",
     "postcss-pxtorem": "^6.0.0",
     "swiper": "^10.2.0",
     "vue": "^3.2.13",
+    "vue-clipboard3": "^2.0.0",
+    "vue-i18n": "^9.4.1",
     "vue-router": "^4.0.3"
   },
   "devDependencies": {
@@ -30,7 +34,8 @@
     "eslint-plugin-vue": "^8.4.0",
     "prettier": "^2.4.1",
     "sass": "^1.32.7",
-    "sass-loader": "^12.0.0"
+    "sass-loader": "^12.0.0",
+    "wowjs": "^1.1.3"
   },
   "eslintConfig": {
     "root": true,
