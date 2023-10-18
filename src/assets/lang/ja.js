@@ -36,19 +36,19 @@ export default {
         "E-commerce-talent": "電子商取引達人",
         "View-all": "すべて表示",
         "Information": "達人概要",
-        "Watch-video": "观看影片",
-        "Recently-live": "最新直播",
+        "Watch-video": "ビデオを見る",
+        "Recently-live": "最新生放送",
         "Load-more": "もっと読み込む",
         "Share": "記事の共有",
         "Spot-news": "最新情報",
 
-        "Touch-the-platform": "触达平台",
-        "Cooperative-brand": "合作品牌",
-        "Team-introduction": "团队介绍",
-        "Service-content": "服务内容",
-        "Company-address": "公司地址",
+        "Touch-the-platform": "触れる",
+        "Cooperative-brand": "提携ブランド",
+        "Team-introduction": "チームの紹介",
+        "Service-content": "サービス内容",
+        "Company-address": "会社住所",
 
-        "E-Mail": "e-Mail",
+        "E-Mail": "郵便箱",
         "Phone": "電話",
         "Address": "住所",
 
@@ -57,6 +57,13 @@ export default {
         "Submit": "提出",
         "Submit1": "投递简历",
         "Questions": "問題があれば、答えがある。",
+
+        "Month": "月",
+        "Day": "日 です",
+
+        "Name": "姓名",
+        "Info": "詳細",
+        "OR": "或"
     },
     ...jaLocale
 };

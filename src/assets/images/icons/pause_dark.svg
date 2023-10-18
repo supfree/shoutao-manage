@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon/play备份</title>
+    <g id="pc端" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="中国_首页" transform="translate(-1532, -3062)">
+            <g id="编组-17" transform="translate(310, 2214)">
+                <g id="icon/play备份" transform="translate(1222.75, 848.75)">
+                    <path d="M13.25,26.5 C20.5677729,26.5 26.5,20.5677729 26.5,13.25 C26.5,5.93222707 20.5677729,0 13.25,0 C5.93222707,0 0,5.93222707 0,13.25 C0,20.5677729 5.93222707,26.5 13.25,26.5 Z" id="椭圆形" stroke="#111111" stroke-width="1.5" fill-opacity="0" fill="#FFFFFF"></path>
+                    <rect id="矩形" fill="#2A62D0" opacity="0" x="7.75" y="7.75" width="11" height="11"></rect>
+                    <g id="icon/pause" transform="translate(7.75, 7.75)">
+                        <rect id="矩形" fill="#2A62D0" opacity="0" x="0" y="0" width="11" height="11"></rect>
+                        <line x1="2" y1="1.5" x2="2" y2="9.5" id="路径-6" stroke="#111111" stroke-width="2.5" stroke-linecap="round"></line>
+                        <line x1="9" y1="1.5" x2="9" y2="9.5" id="路径-6备份" stroke="#111111" stroke-width="2.5" stroke-linecap="round"></line>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>播放</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="首页" transform="translate(-1857, -778)" fill="#FFFFFF">
+            <g id="播放" transform="translate(1857, 778)">
+                <circle id="椭圆形" stroke="#FFFFFF" stroke-width="2" fill-opacity="0" cx="18" cy="18" r="17"></circle>
+                <path d="M16.3053132,12.4670175 L23.0113694,16.7345078 C23.7102814,17.17927 23.9163106,18.1064012 23.4715483,18.8053132 C23.3536803,18.9905344 23.1965906,19.1476242 23.0113694,19.2654922 L16.3053132,23.5329825 C15.6064012,23.9777447 14.67927,23.7717156 14.2345078,23.0728035 C14.0813501,22.8321271 14,22.5527663 14,22.2674903 L14,13.7325097 C14,12.9040826 14.6715729,12.2325097 15.5,12.2325097 C15.785276,12.2325097 16.0646368,12.3138598 16.3053132,12.4670175 Z" id="矩形"></path>
+            </g>
+        </g>
+    </g>
+</svg>

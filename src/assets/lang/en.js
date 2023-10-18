@@ -29,8 +29,6 @@ export default {
         "Company-address": "Company-address",
 
         "Artist-management": "Artist-management",
-
-        "View-all": "View-all",
     },
 
     other: {
@@ -42,6 +40,7 @@ export default {
         "Watch-video": "Watch video",
         "Recently-live": "Recently live",
         "Load-more": "Load more",
+        "No-Load-more": "No more",
         "Share": "Share",
         "Spot-news": "Spot news",
 
@@ -60,6 +59,15 @@ export default {
         "Submit": "Submit",
         "Submit1": "Submit",
         "Questions": "Questions? Answers",
+
+        "Month": "month",
+        "Day": "th",
+        "Fans": "Fans",
+        "Like": "Like",
+
+        "Name": "Name / Corporate name",
+        "Info": "Affection",
+        "OR": "OR"
     },
     ...enLocale
 };

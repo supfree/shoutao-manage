@@ -16,7 +16,6 @@
         <Footer></Footer>
       </el-footer>
     </el-container>
-    <el-backtop :right="20" :bottom="20" />
   </div>
 </template>
 
@@ -44,10 +43,9 @@ export default {
 <style lang="scss">
 // import "@/assets/css/_globals.scss";
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
 }
 
 .el-container {

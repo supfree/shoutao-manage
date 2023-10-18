@@ -1,10 +1,21 @@
 <template>
   <div class="ent-item">
-    <img :src="imageUrl + item.image" alt="">
+    <!-- <img class="bg-poster" :src="imageUrl + item.image" alt=""> -->
+    <video
+      :id="'myVideo' + item.id"
+      class="bg-poster"
+      src="https://media.w3.org/2010/05/sintel/trailer.mp4"
+      :poster="imageUrl + item.image"
+      x5-playsinline="true"
+      playsinline="true"
+      webkit-playsinline="true"
+      preload="auto"
+      loop
+    ></video>
     <div class="ent-info">
       <div class="ent-box">
         <div>
-          <img :src="imageUrl + item.platform.image" alt="icon" v-if="icon">
+          <img :src="imageUrl + item.platform.image" alt="icon" v-if="icon" />
           <div class="touch">
             <p class="name">{{ item.name }}</p>
             <p class="id">{{ item.number }}</p>
@@ -19,27 +30,49 @@
             <span class="span1">粉丝</span>
             <span class="span2">{{ item.fans }}</span>
           </span>
-           | <span class="span1">获赞</span>
+          <el-divider direction="vertical" />
+          <span class="span1">获赞</span>
           <span class="span2">{{ item.like }}</span>
         </p>
         <p class="u-line-1 info">{{ item.editor }}</p>
       </div>
-      <el-icon style="flex-shrink: 0;" size="30" color="#FFFFFF" class="touch" v-if="icon">
-        <VideoPlay />
+      <el-icon
+        style="flex-shrink: 0"
+        size="30"
+        color="#FFFFFF"
+        class="touch"
+        v-if="icon"
+        @click="playVideo"
+      >
+        <img src="../assets/images/icons/pause.svg" alt="" v-if="isPlay" />
+        <img src="../assets/images/icons/play.svg" alt="" v-else />
       </el-icon>
     </div>
   </div>
 </template>
 
 <script setup>
-import { imageUrl } from '../assets/js/request.js';
-defineProps({
+import { ref } from "vue";
+import { imageUrl } from "../assets/js/request.js";
+const props = defineProps({
   item: Object,
   icon: {
     type: Boolean,
-    default: true
+    default: true,
+  },
+});
+
+const isPlay = ref(false);
+const playVideo = () => {
+  const video = document.querySelector("#myVideo" + props.item.id);
+  console.log(video);
+  isPlay.value = !isPlay.value;
+  if (isPlay.value) {
+    video.play();
+  } else {
+    video.pause();
   }
-})
+};
 </script>
 
 <style lang="scss" scoped>
@@ -49,7 +82,7 @@ defineProps({
   height: 3.5rem;
   cursor: pointer;
 
-  &>img {
+  .bg-poster {
     z-index: 1;
     position: absolute;
     left: 0;
@@ -69,14 +102,18 @@ defineProps({
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: .15rem;
+    padding: 0.15rem;
     text-align: left;
-    background: linear-gradient(180deg, rgba(17, 17, 17, 0) 0%, rgba(17, 17, 17, 0.77) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(17, 17, 17, 0) 0%,
+      rgba(17, 17, 17, 0.77) 100%
+    );
 
     .ent-box {
       width: calc(100% - 40px);
 
-      &>div {
+      & > div {
         width: 100%;
         display: flex;
         align-items: center;
@@ -114,6 +151,11 @@ defineProps({
           color: rgba(255, 255, 255, 0.55);
         }
 
+        .el-divider {
+          height: 13px;
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+
         .span2 {
           margin-left: 5px;
           font-size: 15px;
@@ -131,6 +173,13 @@ defineProps({
         box-sizing: border-box;
         color: rgba(255, 255, 255, 0.77);
       }
+    }
+  }
+
+  .el-icon {
+    img {
+      width: 28px;
+      height: 28px;
     }
   }
 }
