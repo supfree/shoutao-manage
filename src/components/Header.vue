@@ -10,40 +10,53 @@
             </div>
         </div> -->
     <div class="header-box">
-      <div class="header-logo mr30">
-        <div class="header-logo touch" @click="gotoInfo('/')">
-          <img :src="logo" alt="" />
-          <!-- <span class="logo-text">{{ $t('main.Title') }}</span> -->
-        </div>
+      <div
+        class="header-logo touch"
+        @click="gotoInfo('/')"
+        v-if="mobile_search"
+      >
+        <img :src="logo" alt="" />
+        <!-- <span class="logo-text">{{ $t('main.Title') }}</span> -->
       </div>
-      <div v-if="!is_search" class="header-nav">
-        <div class="header-nav_item">
-          <router-link to="/live">{{ $t("main.Live") }}</router-link>
-        </div>
-        <div class="header-nav_item">
-          <router-link to="/master">{{ $t("main.Talent") }}</router-link>
-        </div>
-        <div class="header-nav_item">
-          <router-link to="/join">{{ $t("main.Join-us") }}</router-link>
-        </div>
-        <div class="header-nav_item">
-          <router-link to="/new">{{ $t("main.News") }}</router-link>
-        </div>
-        <div class="header-nav_item">
-          <router-link to="/about">{{ $t("main.About") }}</router-link>
-        </div>
+      <!-- <div v-if="!is_search" class="header-nav"> -->
+      <div class="header-nav_item" v-if="!is_search">
+        <router-link to="/live">{{ $t("main.Live") }}</router-link>
       </div>
-      <div class="right u-flex alignItems">
+      <div class="header-nav_item" v-if="!is_search">
+        <router-link to="/master">{{ $t("main.Talent") }}</router-link>
+      </div>
+      <div class="header-nav_item" v-if="!is_search">
+        <router-link to="/join">{{ $t("main.Join-us") }}</router-link>
+      </div>
+      <div class="header-nav_item" v-if="!is_search">
+        <router-link to="/new">{{ $t("main.News") }}</router-link>
+      </div>
+      <div class="header-nav_item" v-if="!is_search">
+        <router-link to="/about">{{ $t("main.About") }}</router-link>
+      </div>
+      <!-- </div> -->
+      <div
+        class="right u-flex alignItems"
+        :style="mobile_search ? '' : 'width: 100%'"
+      >
         <div class="search" v-if="is_search">
           <el-input
             class="inputDeep"
             v-model="key_word"
             size="small"
             placeholder="请输入您要搜索的内容"
-            clearable
             @keydown.enter="search"
           ></el-input>
-          <el-icon class="touch" @click="toggleSearch"><Close /></el-icon>
+          <img
+            class="icon-search"
+            src="../assets/images/icons/search.svg"
+            alt="menu"
+            @click="search"
+            v-if="_isMobile"
+          />
+          <el-icon class="touch" size="20" @click="toggleSearch"
+            ><Close
+          /></el-icon>
         </div>
         <div class="u-flex alignItems" v-else>
           <img
@@ -61,10 +74,10 @@
           </div>
         </div>
       </div>
-      <div class="menu" v-if="is_menu">
+      <div class="menu" @touchmove.prevent v-if="is_menu">
         <div class="menu-list animate__animated animate__fadeIn">
           <div
-            class="touch"
+            class="logo-text touch"
             v-for="item in menuList"
             :key="item"
             @click="gotoInfo(item.path)"
@@ -79,10 +92,17 @@
 
 <script setup>
 import { useI18n } from "vue-i18n";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, getCurrentInstance, computed } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const { t } = useI18n();
+// 判断设备
+const _isMobile =
+  getCurrentInstance().appContext.config.globalProperties.$utils._isMobile();
+
+const props = defineProps({
+  dark: String,
+});
 
 let key_word = ref("");
 let menuList = ref([
@@ -111,10 +131,19 @@ let menuList = ref([
     path: "/about",
   },
 ]);
-const logo =
-  localStorage.getItem("value") == "cn"
-    ? require("../assets/images/logo_cn.png")
-    : require("../assets/images/logo_en.png");
+let logo = ref("");
+console.log(props.dark);
+if (props.dark == 0) {
+  logo.value =
+    localStorage.getItem("value") != "cn"
+      ? require("../assets/images/logo_en1.png")
+      : require("../assets/images/logo_cn1.png");
+} else {
+  logo.value =
+    localStorage.getItem("value") != "cn"
+      ? require("../assets/images/logo_en.png")
+      : require("../assets/images/logo_cn.png");
+}
 
 const is_search = ref(false);
 const is_menu = ref(false);
@@ -123,9 +152,17 @@ onMounted(() => {
   console.log(t("main.Live"));
 });
 
+const mobile_search = computed(() => {
+  if (_isMobile) {
+    if (is_search.value) {
+      return false;
+    }
+  }
+  return true;
+});
+
 // 控制搜索栏显示
 const toggleSearch = () => {
-  console.log(key_word.value);
   is_search.value = !is_search.value;
 };
 
@@ -137,37 +174,64 @@ const toggleMenu = () => {
   const NavigationBar = document.querySelector(".header-box");
   const lineTop = document.querySelector(".LineTop");
   const lineBottom = document.querySelector(".LineBottom");
-  const logoText = document.querySelector(".logo-text");
+  const logoText = document.querySelector(".menu .logo-text");
   const htmlElement = document.documentElement;
   const bodyElement = document.body;
 
   if (is_menu.value) {
     GloHeader.style.transition = "0.5s";
     GloHeader.style.backgroundColor = "#000";
-    logoText.style.color = "#FFFFFF";
+    // logoText.style.color = "#FFFFFF";
     NavigationBar.style.backgroundColor = "#111111";
     NavigationBar.style.transition = "1s";
     lineTop.style.transform = "translateY(3px) rotate(45deg)";
-    lineTop.style.backgroundColor = "#ffffff";
-    lineBottom.style.backgroundColor = "#ffffff";
+    lineTop.style.backgroundColor = "#FFFFFF";
+    lineBottom.style.backgroundColor = "#FFFFFF";
     lineBottom.style.width = "18px";
     lineBottom.style.transform = "translateY(-3px) rotate(-45deg)";
     htmlElement.style.overflow = "hidden";
     bodyElement.style.overflow = "hidden";
+
+    logo.value =
+      localStorage.getItem("value") != "cn"
+        ? require("../assets/images/logo_en1.png")
+        : require("../assets/images/logo_cn1.png");
   } else {
+    logo.valie =
+      localStorage.getItem("value") != "cn"
+        ? require("../assets/images/logo_en.png")
+        : require("../assets/images/logo_cn.png");
+
     GloHeader.style.transition = "0.5s";
-    GloHeader.style.backgroundColor = "#ffffff";
-    logoText.style.color = "#000000";
-    NavigationBar.style.backgroundColor = "#ffffff";
     NavigationBar.style.transition = "1s";
     lineTop.style.transform = "translateY(0) rotate(0deg)";
-    lineTop.style.backgroundColor = "#111111";
-    lineBottom.style.backgroundColor = "#111111";
     lineBottom.style.width = "12px";
     lineBottom.style.transform = "translateY(0) rotate(0deg)";
     htmlElement.style.overflow = "visible";
     bodyElement.style.overflow = "visible";
+    if (props.dark == 0) {
+      return;
+    }
+    logoText.style.color = "#000000";
+    NavigationBar.style.backgroundColor = "#ffffff";
+    GloHeader.style.backgroundColor = "#ffffff";
+    lineTop.style.backgroundColor = "#111111";
+    lineBottom.style.backgroundColor = "#111111";
   }
+
+  // if (localStorage.getItem("value") != "cn") {
+  //   if (is_menu.value) {
+  //     logo = require("../assets/images/logo_cn1.png");
+  //   } else {
+  //     logo = require("../assets/images/logo_cn.png");
+  //   }
+  // } else {
+  //   if (is_menu.value) {
+  //     logo = require("../assets/images/logo_en1.png");
+  //   } else {
+  //     logo = require("../assets/images/logo_en.png");
+  //   }
+  // }
 };
 
 // 搜索跳转
@@ -188,6 +252,35 @@ const gotoInfo = (path) => {
 </script>
 
 <style lang="scss" scoped>
+.dark {
+  background-color: rgba(17, 17, 17, 0.93);
+  .header-nav_item {
+    a {
+      color: rgba(255, 255, 255, 0.77);
+    }
+  }
+
+  .right {
+    .icon-search {
+      filter: invert(100%);
+    }
+    .search {
+      .el-icon {
+        color: #ffffff;
+      }
+    }
+  }
+
+  .icon-menu {
+    .BtnLine {
+      .LineTop,
+      .LineBottom {
+        background-color: #ffffff;
+      }
+    }
+  }
+}
+
 .header {
   width: 100%;
   height: 100%;
@@ -216,6 +309,7 @@ const gotoInfo = (path) => {
   align-items: center;
   justify-content: space-between;
   width: 62.5%;
+  max-width: 1200px;
   height: 100%;
   // padding: 8px 0;
   margin: 0 auto;
@@ -246,7 +340,7 @@ const gotoInfo = (path) => {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
 
   &_item {
     font-size: 14px;
@@ -280,12 +374,19 @@ const gotoInfo = (path) => {
 }
 
 .right {
+  margin-right: 20px;
   .icon-search {
     width: 14px;
     height: 14px;
-    margin-right: 20px;
     object-fit: cover;
     cursor: pointer;
+  }
+
+  .el-input__inner::placeholder {
+    font-size: 14px;
+    font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
+    font-weight: 400;
+    color: rgba(17, 17, 17, 0.55);
   }
 
   // .icon-menu {
@@ -385,9 +486,18 @@ const gotoInfo = (path) => {
   .header-box {
     width: 100%;
     padding: 14px;
+
+    .search {
+      width: 100%;
+    }
+  }
+
+  .header-nav_item {
+    display: none;
   }
 
   .header-logo {
+    margin: 0 !important;
     img {
       width: 96px;
       height: 36px;
@@ -400,6 +510,13 @@ const gotoInfo = (path) => {
 
   .header-nav {
     display: none;
+  }
+
+  .right {
+    margin: 0 !important;
+    .icon-search {
+      margin-right: 21px;
+    }
   }
 
   .icon-menu {

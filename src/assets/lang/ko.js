@@ -21,6 +21,7 @@ export default {
         
         "Hot-news": "최신 뉴스",
 
+
         "Touch-the-platform": "룽다플랫폼",
         "Cooperative-brand": "합작 브랜드",
         "Team-introduction": "팀 소개",
@@ -29,6 +30,49 @@ export default {
 
         "Artist-management": "아티스트 관리",
         
+    },
+
+    other: {
+        "All": "All",
+        "Entertainment-talent": "Entertainment talent",
+        "E-commerce-talent": "E-commerce talent",
+        "View-all": "View all",
+        "Information": "Information",
+        "Watch-video": "Watch video",
+        "Recently-live": "Recently live",
+        "Load-more": "Load more",
+        "No-Load-more": "No more",
+        "Share": "Share",
+        "Spot-news": "Spot news",
+
+        "Touch-the-platform": "Touch the platform",
+        "Cooperative-brand": "Cooperative brand",
+        "Team-introduction": "Team introduction",
+        "Service-content": "Service content",
+        "Company-address": "Company address",
+
+        "E-Mail": "E-Mail",
+        "Phone": "Phone",
+        "Address": "Address",
+
+        "Cooperation": "Business & Signing",
+        "Commercial":"Business",
+        "Sign":"Signing",
+
+        "Submit": "Submit",
+        "Submit1": "Submit",
+        "Questions": "Questions? Answers",
+
+        "Month": "month",
+        "Day": "th",
+        "Fans": "Fans",
+        "Like": "Like",
+
+        "Name": "Name / Corporate name",
+        "Info": "Affection",
+        "OR": "OR",
+
+        "Copyright": "Copyright © 2023 VividTide.  All rights reserved."
     },
     ...koLocale
 };

@@ -3,23 +3,24 @@
     <el-container>
       <!-- 头部 -->
       <el-header id="globalheader">
-        <Header></Header>
+        <Header :class="dark == 0 ? 'dark' : ''" :dark="dark"></Header>
       </el-header>
 
       <!-- 内容 -->
       <el-main>
-        <router-view></router-view>
+        <router-view @increase="handleIncrease"></router-view>
       </el-main>
 
       <!-- 底部 -->
       <el-footer>
-        <Footer></Footer>
+        <Footer :class="dark == 0 ? 'dark' : ''" :dark="dark"></Footer>
       </el-footer>
     </el-container>
   </div>
 </template>
 
 <script>
+import { toRaw } from "vue";
 import "@/assets/css/normalize.css";
 import "@/assets/css/common.css";
 import "@/assets/css/_globals.scss";
@@ -33,17 +34,23 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      dark: 1
+    };
   },
 
-  methods: {},
+  methods: {
+    handleIncrease(e) {
+      this.dark = toRaw(e).background;
+    }
+  },
 };
 </script>
 
 <style lang="scss">
 // import "@/assets/css/_globals.scss";
 #app {
-  font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
+  font-family: NotoSansCJKsc-Regular, NotoSansCJKsc, "Microsoft YaHei";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -75,15 +82,6 @@ export default {
     height: auto;
     padding: 0;
     background-color: #F5F5F7;
-  }
-}
-
-@media only screen and (max-width: 992px) {
-  // .el-main {
-  //   min-height: calc(100vh - 416px);
-  // }
-  html {
-    font-size: 110px !important;
   }
 }
 </style>

@@ -4,7 +4,7 @@
     <video
       :id="'myVideo' + item.id"
       class="bg-poster"
-      src="https://media.w3.org/2010/05/sintel/trailer.mp4"
+      :src="item.video?(imageUrl + item.video):'https://media.w3.org/2010/05/sintel/trailer.mp4'"
       :poster="imageUrl + item.image"
       x5-playsinline="true"
       playsinline="true"
@@ -25,28 +25,29 @@
           <span v-if="item.play">
             <span class="span1">播放</span>
             <span class="span2">{{ item.play }}</span>
+            <span class="span1">{{ item.play_unit }}</span>
           </span>
           <span v-if="item.fans">
             <span class="span1">粉丝</span>
             <span class="span2">{{ item.fans }}</span>
+            <span class="span1">{{ item.fans_unit }}</span>
           </span>
           <el-divider direction="vertical" />
           <span class="span1">获赞</span>
           <span class="span2">{{ item.like }}</span>
+          <span class="span1">{{ item.like_unit }}</span>
         </p>
-        <p class="u-line-1 info">{{ item.editor }}</p>
+        <p class="u-line-1 info" v-html="item.editor"></p>
       </div>
-      <el-icon
+      <div
         style="flex-shrink: 0"
-        size="30"
-        color="#FFFFFF"
-        class="touch"
+        class="touch gl-icon"
         v-if="icon"
         @click="playVideo"
       >
         <img src="../assets/images/icons/pause.svg" alt="" v-if="isPlay" />
         <img src="../assets/images/icons/play.svg" alt="" v-else />
-      </el-icon>
+      </div>
     </div>
   </div>
 </template>
@@ -79,7 +80,9 @@ const playVideo = () => {
 .ent-item {
   position: relative;
   width: 100%;
-  height: 3.5rem;
+  height: 100%;
+  max-width: 376px;
+  max-height: 668px;
   cursor: pointer;
 
   .bg-poster {
@@ -102,7 +105,7 @@ const playVideo = () => {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 0.15rem;
+    padding: 0 24px 33px;
     text-align: left;
     background: linear-gradient(
       180deg,
@@ -176,23 +179,24 @@ const playVideo = () => {
     }
   }
 
-  .el-icon {
+  .gl-icon {
     img {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
     }
   }
 }
 
-@media only screen and (max-width: 1250px) {
-  .ent-item {
-    height: 5rem;
-  }
-}
+// @media only screen and (max-width: 1250px) {
+//   .ent-item {
+//     height: 5rem;
+//   }
+// }
 
 @media only screen and (max-width: 992px) {
   .ent-item {
-    height: 700px;
+    max-width: 100%;
+    max-height: 100%;
   }
 }
 </style>

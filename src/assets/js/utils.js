@@ -1,3 +1,4 @@
+import { useI18n } from "vue-i18n";
 export default {
   // 检测设备
   _isMobile() {
@@ -13,6 +14,7 @@ export default {
 
   // 处理时间
   traversalTime(date) {
+    console.log(useI18n());
     // var nowTime = new Date().getTime(); //获取当前时间的毫秒数
     // var diffence = (nowTime - date) / 1000; //与当前时间的秒差
     var time = new Date(date); //转为本地时间格式

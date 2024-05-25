@@ -27,7 +27,7 @@
       <div class="banner-title">
         <!-- 光生致力于生产出创新、有趣的内容，不断发掘富有创造力的内容创作者。 -->
         <div
-          class="title animate__animated animate__fadeInUp"
+          class="title animate__animated animate__fadeInDown"
           v-html="topInfo.editor"
         ></div>
         <div class="info-item">
@@ -44,7 +44,7 @@
             <div class="text-title">
               <span class="light-spans">{{ $t("other.Like") }}</span>
               <span class="bold-spans">{{ topInfo.like }}</span>
-              <!-- <span class="light-spans">万</span> -->
+              <span class="light-spans">{{ topInfo.like_unit }}</span>
             </div>
           </div>
         </div>
@@ -56,8 +56,8 @@
         <div
           class="intro-box-title hidden animate__animated animate__delay-0.5s"
         >
-          <div>{{ topIntro.title }}</div>
-          <div class="content">{{ topIntro.editor }}</div>
+          <div v-html="topIntro.title"></div>
+          <div class="content" v-html="topIntro.editor"></div>
         </div>
         <div class="intro-item hidden animate__animated animate__delay-0.5s">
           <div
@@ -65,9 +65,9 @@
             v-for="(item, index) in topIntro.children"
             :key="index"
           >
-            <div class="tip-title">{{ item.title }}</div>
-            <div class="tip-con">{{ item.title_deputy }}</div>
-            <div class="tip-info">{{ item.editor }}</div>
+            <div class="tip-title" v-html="item.title"></div>
+            <div class="tip-con" v-html="item.title_deputy"></div>
+            <div class="tip-info" v-html="item.editor"></div>
             <el-button round size="large" @click="goInfo(item.button_url)">
               {{ item.button_name }}
             </el-button>
@@ -76,6 +76,7 @@
       </div>
     </div>
     <!-- 娱乐直播 -->
+    <div style="background:white">
     <div class="ent-live entertainment">
       <div class="title">{{ $t("main.Entertainment-live") }}</div>
       <swiper
@@ -84,7 +85,7 @@
         :centeredSlides="Boolean(_isMobile)"
         :autoplay="{ delay: 5000, disableOnInteraction: false }"
         :loop="Boolean(_isMobile)"
-        :spaceBetween="20"
+        :spaceBetween="Boolean(_isMobile) ? 14 : 36"
         :modules="modules"
         :navigation="{
           nextEl: '.entertainment .swiper-button-next',
@@ -101,12 +102,12 @@
       <div class="swiper-button-prev"></div>
       <!-- 查看全部 -->
       <div class="btn-bottom">
-        <el-button plain size="large" round @click="goInfo('live')">
-          {{ $t("other.View-all")
-          }}<el-icon class="el-icon--right">
+        <div class="gl-button" @click="goInfo('live')">
+          {{ $t("other.View-all") }}
+          <el-icon size="12" class="el-icon--right">
             <ArrowRight />
           </el-icon>
-        </el-button>
+        </div>
         <el-icon size="28" color="#111111" class="touch" @click="entTogglePlay">
           <img
             src="../assets/images/icons/pause_dark.svg"
@@ -117,6 +118,7 @@
         </el-icon>
       </div>
     </div>
+    </div>
     <!-- 电商直播 -->
     <div class="ent-live commerce">
       <div class="title">{{ $t("main.E-commerce-live") }}</div>
@@ -126,7 +128,7 @@
         :centeredSlides="Boolean(_isMobile)"
         :autoplay="{ delay: 5000, disableOnInteraction: false }"
         :loop="Boolean(_isMobile)"
-        :spaceBetween="20"
+        :spaceBetween="Boolean(_isMobile) ? 14 : 36"
         :modules="modules"
         :navigation="{
           nextEl: '.commerce .swiper-button-next',
@@ -143,12 +145,12 @@
       <div class="swiper-button-prev"></div>
       <!-- 查看全部 -->
       <div class="btn-bottom">
-        <el-button plain size="large" round @click="goInfo('live')">
-          {{ $t("other.View-all")
-          }}<el-icon class="el-icon--right">
+        <div class="gl-button" @click="goInfo('live')">
+          {{ $t("other.View-all") }}
+          <el-icon size="12" class="el-icon--right">
             <ArrowRight />
           </el-icon>
-        </el-button>
+        </div>
         <el-icon size="28" color="#111111" class="touch" @click="comTogglePlay">
           <img
             src="../assets/images/icons/pause_dark.svg"
@@ -174,24 +176,22 @@
           @swiper="initSwiper"
           v-if="swiper1.length"
         >
-          <swiper-slide v-for="(item, index) in swiper1" :key="index">
+          <swiper-slide v-for="(item, index) in [...swiper1,...swiper1,...swiper1,...swiper1,...swiper1]" :key="index">
             <img :src="imageUrl + item.image" alt="" />
             <transition name="el-zoom-in-bottom">
               <div class="swiper-mask-info" v-show="show">
                 <p class="name">{{ item.name }}</p>
                 <div class="info">
-                  <p class="u-line-3">{{ item.editor }}</p>
-                  <el-button
-                    plain
-                    size="large"
-                    round
+                  <p class="u-line-3" v-html="item.editor"></p>
+                  <div
+                    class="gl-button"
                     @click="goInfo('artist', item.button_url)"
                   >
                     {{ $t("other.Information") }}
-                    <el-icon class="el-icon--right">
+                    <el-icon size="12">
                       <ArrowRight />
                     </el-icon>
-                  </el-button>
+                  </div>
                 </div>
               </div>
             </transition>
@@ -199,70 +199,52 @@
         </swiper>
         <!-- 轮播盒子 -->
         <div class="swiper-box">
-          <div>
-            <swiper
-              class="swiper-item"
-              id="b-swiper1"
-              :speed="speed1"
-              :freeMode="true"
-              :modules="modules"
-              :loop="true"
-              :slides-per-view="4"
-              :space-between="14"
-              :autoplay="{
-                delay: 0,
-              }"
-              @swiper="initSwiper1"
-              @mouseenter.native="mouseEnter1"
-              @mouseleave.native="mouseLeave1"
-              v-if="swiper2.length"
-            >
-              <swiper-slide
-                class="touch"
+          <div class="flex-swiper-box">
+            <div class="flex-swiper swiper-two">
+              <div
                 v-for="(item, index) in swiper2"
                 :key="index"
+                :style="`background: url(${imageUrl + item.image})`"
               >
+                <div class="btn-mask"></div>
+                <transition name="el-zoom-in-bottom">
+                  <div class="button-inter" @click="goInfo('artist', item.id)">
+                    {{ $t("other.Information") }}
+                    <img src="../assets/images/icons/play-filling.svg" alt="" />
+                  </div>
+                </transition>
                 <img :src="imageUrl + item.image" alt="" />
                 <p>{{ item.name }}</p>
-              </swiper-slide>
-            </swiper>
+              </div>
+            </div>
           </div>
-          <div>
-            <swiper
-              class="swiper-item"
-              id="b-swiper2"
-              :speed="speed2"
-              :freeMode="true"
-              :modules="modules"
-              :loop="true"
-              :slides-per-view="4"
-              :space-between="14"
-              :autoplay="{
-                delay: 0,
-              }"
-              @swiper="initSwiper2"
-              @mouseenter.native="mouseEnter2"
-              @mouseleave.native="mouseLeave2"
-              v-if="swiper3.length"
-            >
-              <swiper-slide
-                class="touch"
+
+          <div class="flex-swiper-box">
+            <div class="flex-swiper swiper-three">
+              <div
                 v-for="(item, index) in swiper3"
                 :key="index"
+                :style="`background: url(${imageUrl + item.image})`"
               >
+                <div class="btn-mask"></div>
+                <div class="button-inter" @click="goInfo('artist', item.id)">
+                  {{ $t("other.Information") }}
+                  <img src="../assets/images/icons/play-filling.svg" alt="" />
+                </div>
                 <img :src="imageUrl + item.image" alt="" />
                 <p>{{ item.name }}</p>
-              </swiper-slide>
-            </swiper>
+              </div>
+            </div>
           </div>
+
           <!-- 查看全部 -->
           <div class="btn-bottom">
-            <el-button plain size="large" round @click="goInfo('master')">
-              {{ $t("other.View-all")
-              }}<el-icon class="el-icon--right">
+            <div class="gl-button" @click="goInfo('master')">
+              {{ $t("other.View-all") }}
+              <el-icon class="el-icon--right">
                 <ArrowRight />
               </el-icon>
-            </el-button>
+            </div>
             <el-icon
               size="28"
               color="#FFFFFF"
@@ -321,7 +303,6 @@ import "swiper/scss/pagination";
 // 判断设备
 const _isMobile =
   getCurrentInstance().appContext.config.globalProperties.$utils._isMobile();
-console.log(Boolean(_isMobile));
 
 const modules = [Navigation, Autoplay, FreeMode];
 
@@ -341,6 +322,7 @@ let topIntro = ref({});
 let questionList = ref([]);
 let swiper1 = ref([]);
 let swiper2 = ref([]);
+let swiperList2 = ref([]);
 let swiper3 = ref([]);
 const getHomeInfo = () => {
   get("index/index", {
@@ -349,12 +331,13 @@ const getHomeInfo = () => {
     // console.log(res);
     topInfo.value = res.data[0];
     topIntro.value = res.data[1];
-    list1.value = res.data[2];
-    list2.value = res.data[3];
-    questionList.value = res.data[5];
-    swiper1.value = res.data[4].children;
-    swiper2.value = res.data[6].children;
-    swiper3.value = res.data[7].children;
+    list1.value = res.data[2].data;
+    list2.value = res.data[3].data;
+    questionList.value = res.data[5]||[];
+    swiper1.value = res.data[4].children||[];
+    swiper2.value = res.data[6].children||[];
+    swiperList2.value = res.data[6].children||[];
+    swiper3.value = res.data[7].children||[];
 
     setTimeout(() => {
       calculateTotalHeight();
@@ -380,7 +363,7 @@ const calculateTotalHeight = () => {
   const title = document.querySelector(".banner-title");
   const intro = document.querySelector(".intro");
   const totalHeight = title.offsetHeight + intro.offsetHeight;
-  console.log(intro.offsetHeight, 111);
+  // console.log(intro.offsetHeight, 111);
   nextTick(() => {
     stickyWrapper.style.height = totalHeight + "px";
   });
@@ -389,8 +372,8 @@ const calculateTotalHeight = () => {
 // 监听滑动 X
 const handleResize = () => {
   const width = window.innerWidth;
-  if (width > 1000) {
-    console.log(width);
+  if (width > 10000) {
+    console.log(1);
   }
 };
 
@@ -403,6 +386,7 @@ const handleScroll = () => {
   const title1 = document.querySelector(".intro-box-title");
   const titleBox = document.querySelector(".intro-item");
   const scrollTop = document.documentElement.scrollTop;
+  //console.log(scrollTop);
 
   // 文案效果
   if (scrollTop >= 250) {
@@ -432,37 +416,33 @@ const handleScroll = () => {
   // 多轮播
   const oSwiper = document.querySelector(".swiper-one");
   const oPicture = document.querySelector(".swiper-box");
-  // const swiperArr = document.querySelectorAll(
-  //     ".swiper-one .swiper-wrapper .swiper-slide"
-  //   );
+  const swiperArr = document.querySelectorAll(
+    ".swiper-one .swiper-wrapper .swiper-slide"
+  );
   const windowHeight =
     window.innerHeight || document.documentElement.clientHeight;
 
-  // console.log(scrollTop);
-
-  if (scrollTop >= 5642) {
+  if (scrollTop >= 5680) {
     const transY = windowHeight / 2 - 250;
     // oSwiper.style.transform = `scale(1) translateY(${transY}px)`;
     oPicture.style.transform = `translateY(${transY}px)`;
     oPicture.style.opacity = "1";
     oPicture.style.transition = " 1s ease-in-out ";
     oPicture.style.transitionDelay = " 1s ease-in-out ";
-    // swiperArr.forEach((item) => {
-    //   item.style.opacity = "1";
-    //   item.style.transition = " 1s ease-in-out ";
-    //   item.style.transitionDelay = " 1s ease-in-out ";
-    // });
-  } else if (scrollTop >= 3242 && scrollTop < 5642) {
+    swiperArr.forEach((item) => {
+      item.style.opacity = "1";
+    });
+  } else if (scrollTop >= 3242 && scrollTop < 5680) {
     show.value = false;
     const transY = windowHeight / 2;
-    const transYBtn = 80 + ((scrollTop - 3242) / (5642 - 3242)) * (transY - 80);
-    const scale = 2.5 - ((scrollTop - 3242) / (5642 - 3242)) * 1.5;
+    const transYBtn = 80 + ((scrollTop - 3242) / (5680 - 3242)) * (transY - 80);
+    const scale = 2.5 - ((scrollTop - 3242) / (5680 - 3242)) * 1.5;
     oSwiper.style.transform = `scale(${scale}) translateY(${transYBtn}px)`;
     oSwiper.style.transition = "transform";
     oPicture.style.opacity = "0";
-    // swiperArr.forEach((item) => {
-    //   item.style.opacity = "0";
-    // });
+    swiperArr.forEach((item) => {
+      item.style.opacity = (scrollTop - 5000) / 100;
+    });
   } else if (scrollTop >= 0 && scrollTop < 3242) {
     const transY = windowHeight / 2 - 250;
     // oSwiper.style.transform = `scale(2.5) translateY(80px)`;
@@ -470,7 +450,7 @@ const handleScroll = () => {
     oPicture.style.transform = `translateY(${transY}px)`;
   }
 
-  if (scrollTop >= 5642) {
+  if (scrollTop >= 5680) {
     show.value = true;
     // bottomSwiper.autoplay.start();
     const transY = windowHeight / 2 - 250;
@@ -478,8 +458,8 @@ const handleScroll = () => {
   } else {
     const transY = windowHeight / 2 - 250;
     const transYBtn =
-      75 + ((scrollTop - 4300) / (5642 - 3800)) * (transY - 100);
-    const scale = 10 - (scrollTop / 5642) * 9;
+      75 + ((scrollTop - 4400) / (5560 - 4650)) * (transY - 125);
+    const scale = 10 - ((scrollTop - 3242) / (5680 - 3242)) * 9;
     // console.log(scale.toFixed(2));
     oSwiper.style.transform = `scale(${scale.toFixed(
       3
@@ -525,67 +505,58 @@ const comTogglePlay = () => {
   }
 };
 
+// 底部轮播定时器(translate方法)
+// const translateX = ref(-100);
+// var intervalId = null;
+// var step = ref(0);
+
+// const count = () => {
+//   step.value = step.value + 1;
+//   if (step.value > 10) {
+//     reset();
+//   }
+// };
+
+// const start = () => {
+//   if (intervalId == null) {
+//     count();
+//     intervalId = setInterval(count, 1000);
+//   }
+// };
+
+// const stop = () => {
+//   clearInterval(intervalId);
+//   intervalId = null;
+// };
+
+// const reset = () => {
+//   stop();
+//   step.value = 0;
+//   start();
+// };
+
 // 底部swiper autoplay
-var bottomSwiper = ref(null);
-var bottomSwiper1 = ref(null);
-var bottomSwiper2 = ref(null);
 const is_bottom_auto = ref(true);
-const initSwiper = (swiper) => {
-  bottomSwiper = toRaw(swiper);
-  console.log(bottomSwiper);
-};
-const initSwiper1 = (swiper) => {
-  bottomSwiper1 = toRaw(swiper);
-};
-const initSwiper2 = (swiper) => {
-  bottomSwiper2 = toRaw(swiper);
-};
 
 const bottomSwiperAuto = () => {
-  // const swiper1 = document.querySelector("#b-swiper1 .swiper-wrapper");
-  // nextTick(() => {
-  //   swiper1.style.transitionDelay = 0 + "ms";
-  //   swiper1.style.transitionDuration = 0 + "ms";
-  // });
-  // transition-delay: 0ms;
-  // transition-duration: 0ms;
+  const swiperOne = document.querySelector(".swiper-two");
+  const swiperTwo = document.querySelector(".swiper-three");
   is_bottom_auto.value = !is_bottom_auto.value;
   if (is_bottom_auto.value) {
-    bottomSwiper1.autoplay.start();
-    bottomSwiper2.autoplay.start();
+    swiperOne.style.animationPlayState = "running";
+    swiperTwo.style.animationPlayState = "running";
+    // bottomSwiper1.autoplay.start();
+    // bottomSwiper2.autoplay.start();
   } else {
-    bottomSwiper1.autoplay.stop();
-    bottomSwiper2.autoplay.stop();
+    // bottomSwiper1.autoplay.stop();
+    // bottomSwiper2.autoplay.stop();
+    swiperOne.style.animationPlayState = "paused";
+    swiperTwo.style.animationPlayState = "paused";
   }
 };
 
-// 底部swiper降速
-const speed1 = ref(3500);
-const speed2 = ref(4000);
-const mouseEnter1 = () => {
-  // const swiper1 = document.querySelector("#b-swiper1 .swiper-wrapper");
-  // nextTick(() => {
-  //   swiper1.style.transitionDuration = 2000 + "ms";
-  // });
-  speed1.value = 6000;
-  bottomSwiper1.update();
-};
-const mouseLeave1 = () => {
-  speed1.value = 3500;
-  bottomSwiper1.update();
-};
-
-const mouseEnter2 = () => {
-  speed2.value = 6000;
-  bottomSwiper2.autoplay.start();
-};
-const mouseLeave2 = () => {
-  speed2.value = 4000;
-  bottomSwiper2.autoplay.start();
-};
-
 const goInfo = (e, id) => {
-  console.log(e);
+  console.log(e, id);
   router.push({ path: e, query: { id: id } });
 };
 
@@ -596,13 +567,17 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
+
+.el-collapse{
+  --el-collapse-header-height:none;
+}
 .container {
   font-size: 0;
 }
 
 .section-hero {
   z-index: 3;
-  height: 100vh;
+  height: calc(100vh - 56px);
 
   .sticky-wrapper {
     position: absolute;
@@ -648,7 +623,7 @@ onUnmounted(() => {
   .icon-play {
     position: absolute;
     right: 5%;
-    bottom: 20%;
+    bottom: 160px;
     img {
       width: 28px;
       height: 28px;
@@ -657,36 +632,31 @@ onUnmounted(() => {
 }
 
 .banner-title {
-  z-index: 1;
   position: relative;
-  top: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  width: 100%;
+  width: 62.5%;
+  max-width: 1200px;
   height: 100%;
+  padding-bottom: 105px;
+  margin: 0 auto;
   overflow: hidden;
   pointer-events: none;
 
   .title {
-    position: absolute;
-    left: 20%;
-    bottom: 30%;
-    width: 51%;
+    max-width: 980px;
     text-align: left;
     font-size: 56px;
     font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
     font-weight: bold;
     color: rgba(255, 255, 255, 0.9);
-    line-height: 1.6;
+    line-height: 78px;
   }
-
   .info-item {
-    position: absolute;
-    left: 20%;
-    bottom: 20%;
     display: flex;
     align-items: center;
+    margin-top: 42px;
     text-align: left;
     color: rgba(255, 255, 255, 0.9);
 
@@ -751,79 +721,91 @@ onUnmounted(() => {
   z-index: 9;
   width: 100%;
   height: 100%;
-  // background: url(../assets/images/bg1.png) no-repeat;
-  // background-size: 100% 100%;
 
   &-box {
     width: 62.5%;
+    max-width: 1200px;
     height: 100%;
-    padding: 130px 0;
     margin: 0 auto;
+    padding: 127px 0 144px;
     box-sizing: content-box;
 
     &-title {
-      line-height: 1.5;
+      max-width: 980px;
       text-align: left;
       font-size: 56px;
       font-weight: bold;
-      letter-spacing: 0.03em;
       font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
       color: rgba(255, 255, 255, 0.9);
+      line-height: 83px;
     }
 
     .content {
-      padding: 30px 0 40px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 27px 0 46px;
+      font-size: 56px;
+      font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 78px;
     }
   }
 
   &-item {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    // justify-content: space-between;
     width: 100%;
-    padding: 40px 0;
+    padding-top: 48px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
 
     .tip {
       width: 30%;
+      max-width: 300px;
+      margin-right: 72px;
       text-align: left;
+      position:relative;
 
       &-title {
-        height: 36px;
-        margin-bottom: 20px;
+        min-height: 36px;
         font-size: 24px;
         font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
         font-weight: 500;
         color: rgba(255, 255, 255, 0.9);
+        line-height: 36px;
       }
 
       &-con {
-        margin-bottom: 20px;
-        font-size: 32px;
+        margin: 3px 0 20px;
+        font-size: 36px;
         font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
         font-weight: bold;
         color: rgba(255, 255, 255, 0.9);
+        line-height: 54px;
       }
 
       &-info {
-        height: 150px;
-        margin-bottom: 20px;
+        min-height: 104px;
         font-size: 16px;
         font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
         font-weight: 400;
         color: rgba(255, 255, 255, 0.7);
         line-height: 26px;
+        margin-bottom:107px;
       }
 
       .el-button {
-        width: 152px;
+        min-width: 152px;
         height: 56px;
-        padding: 0 !important;
+        line-height:56px;
+        padding: 0 28px !important;
+        //margin-top: 51px;
         border-radius: 28px;
         font-size: 17px;
         font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
         font-weight: 500;
         color: #111111;
+        position:absolute;
+        bottom:0;
       }
     }
   }
@@ -831,13 +813,14 @@ onUnmounted(() => {
 
 .ent-live {
   position: relative;
-  width: 70%;
+  width: 100%;
+  max-width: 1260px;
   padding: 0 30px;
-  margin: 0.65rem auto;
+  margin: 126px auto 0;
 
   .title {
-    margin-bottom: 60px;
-    font-size: 0.3rem;
+    margin-bottom: 58px;
+    font-size: 56px;
     text-align: center;
     font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
     font-weight: bold;
@@ -853,6 +836,7 @@ onUnmounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
+      height: 668px;
       font-size: 18px;
       text-align: center;
       background-color: #fff;
@@ -877,19 +861,25 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     width: 100%;
-    margin-top: 30px;
+    margin-top: 28px;
 
-    .el-button {
+    .gl-button {
       display: block;
       width: 132px;
-      height: 44px;
+      height: 48px;
       margin: 0 auto;
-      font-size: 16px;
+      font-size: 17px;
+      line-height: 45px;
+      text-align: center;
       font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
       font-weight: 500;
-      border-radius: 24px;
+      border-radius: 50px;
       color: #111111;
-      border: 2px solid #111111;
+      border: 1.5px solid #111111;
+
+      .el-icon--right {
+        margin: -4px;
+      }
     }
 
     & > .el-icon {
@@ -903,6 +893,7 @@ onUnmounted(() => {
   position: relative;
   width: 100%;
   height: 3100px;
+  margin-top: 144px;
   // padding: 30px 0;
   overflow: visible !important;
   background-color: #111111;
@@ -911,8 +902,11 @@ onUnmounted(() => {
     position: sticky;
     top: 0;
     // width: 100vw;
-    height: 1600px;
+    height: 1346px;
+    max-height: 1520px;
+    padding-bottom: 36px;
     overflow: hidden;
+    box-sizing: content-box;
 
     .swiper-one {
       width: 100%;
@@ -920,9 +914,18 @@ onUnmounted(() => {
 
       .swiper-slide-active {
         opacity: 1 !important;
+        .swiper-mask-info {
+          opacity: 1 !important;
+          // display: block !important;
+        }
+      }
+
+      .swiper-mask-info {
+        opacity: 0 !important;
       }
 
       .swiper-slide {
+        opacity: 0;
         position: relative;
         width: 900px;
         height: 506px;
@@ -948,12 +951,12 @@ onUnmounted(() => {
         .info {
           position: absolute;
           bottom: 30px;
-          left: 40px;
+          left: 42px;
           display: flex;
           align-items: center;
           flex-direction: row;
           justify-content: space-between;
-          width: calc(100% - 60px);
+          width: calc(100% - 88px);
 
           p {
             width: 60%;
@@ -964,14 +967,23 @@ onUnmounted(() => {
             line-height: 1.3;
           }
 
-          .el-button {
+          .gl-button {
+            display: block;
             width: 132px;
             height: 48px;
             font-size: 17px;
-            font-weight: 500;
-            color: #111111;
-            border-radius: 24px;
+            line-height: 45px;
+            text-align: center;
             font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
+            font-weight: 500;
+            border-radius: 50px;
+            color: #111111;
+            background-color: #ffffff;
+            cursor: pointer;
+
+            .el-icon--right {
+              margin-left: -4px;
+            }
           }
         }
       }
@@ -979,44 +991,108 @@ onUnmounted(() => {
 
     .swiper-box {
       position: relative;
-      height: 800px;
+      // height: 800px;
+      max-height: 592px;
       box-sizing: content-box;
 
-      .swiper-item {
-        margin-top: 14px !important;
+      .flex-swiper-box {
+        position: relative;
+        height: 250px;
+        margin-top: 14px;
 
-        :deep(.swiper-wrapper) {
-          -webkit-transition-timing-function: linear;
-          /*之前是ease-out*/
-          -moz-transition-timing-function: linear;
-          -ms-transition-timing-function: linear;
-          -o-transition-timing-function: linear;
-          transition-timing-function: linear;
+        .swiper-two {
+          animation: rolling 16s linear infinite;
         }
 
-        .swiper-slide {
-          position: relative;
-          width: 450px !important;
-          height: 250px !important;
-          // color: red;
-          text-align: center;
-          background-size: cover;
-          background-position: center;
+        .swiper-three {
+          animation: rolling 14s linear infinite;
+        }
 
-          img {
-            width: 100%;
-            height: 100%;
-            border-radius: 15px;
+        @keyframes rolling {
+          from {
+            transform: translateX(0);
           }
 
-          p {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 20px;
-            font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
-            font-weight: 500;
-            color: #ffffff;
+          to {
+            transform: translateX(-50%);
+          }
+        }
+
+        .flex-swiper {
+          position: absolute;
+          display: flex;
+          white-space: nowrap;
+          &:hover {
+            animation-play-state: paused;
+          }
+
+          & > div {
+            display: inline-block;
+            position: relative;
+            width: 450px;
+            height: 250px;
+            border-radius: 15px;
+            margin-right: 14px;
+            background-size: cover !important;
+            background-repeat: no-repeat !important;
+            cursor: pointer;
+
+            &:hover {
+              .btn-mask,
+              .button-inter {
+                visibility: visible;
+              }
+            }
+            .btn-mask {
+              z-index: 99;
+              visibility: hidden;
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(0, 0, 0, 50%);
+            }
+            .button-inter {
+              z-index: 999;
+              visibility: hidden;
+              position: absolute;
+              top: calc(50% - 24px);
+              left: calc(50% - 66px);
+              width: 132px;
+              height: 48px;
+              font-size: 17px;
+              text-align: center;
+              line-height: 48px;
+              font-weight: 500;
+              color: #000000;
+              border-radius: 100px;
+              background-color: #ffffff;
+              opacity: 1;
+              font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
+              pointer-events: auto;
+              img {
+                width: 14px;
+                height: 14px;
+              }
+            }
+
+            img {
+              width: 100%;
+              height: 100%;
+              border-radius: 15px;
+              object-fit: cover;
+            }
+
+            p {
+              position: absolute;
+              top: 28px;
+              left: 36px;
+              font-size: 20px;
+              font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
+              font-weight: 500;
+              color: #ffffff;
+            }
           }
         }
       }
@@ -1029,18 +1105,24 @@ onUnmounted(() => {
         padding: 0 30px;
         margin-top: 30px;
 
-        .el-button {
+        .gl-button {
           display: block;
           width: 132px;
           height: 48px;
           margin: 0 auto;
           font-size: 17px;
-          font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
           font-weight: 500;
+          font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
+          line-height: 45px;
+          text-align: center;
           border-radius: 24px;
           color: #ffffff;
-          border-color: #ffffff;
+          border: 1.5px solid #ffffff;
           background-color: transparent !important;
+
+          .el-icon {
+            font-size: 12px;
+          }
         }
 
         & > .el-icon {
@@ -1054,7 +1136,8 @@ onUnmounted(() => {
 
 .question {
   width: 51%;
-  margin: 100px auto;
+  max-width: 980px;
+  margin: 126px auto 144px;
 
   .title {
     margin-bottom: 50px;
@@ -1067,31 +1150,47 @@ onUnmounted(() => {
 
   :deep(.el-collapse) {
     border-top: none !important;
-    --el-collapse-header-height: 0.5rem;
+    // --el-collapse-header-height: 0.5rem;
 
     .el-collapse-item__header {
-      // padding: 10px 0;
+      height: 24px;
+      padding: 28px 0 30px;
       font-size: 24px;
       font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
       font-weight: bold;
       color: rgba(17, 17, 17, 0.93);
+      box-sizing: content-box;
     }
 
     .el-collapse-item__content {
-      width: 80%;
+      width: 100%;
+      max-width: 732px;
+      padding-bottom: 31px;
       text-align: left;
       font-size: 16px;
       font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
       font-weight: 400;
       color: rgba(17, 17, 17, 0.77);
+      line-height: 26px;
     }
 
     .el-collapse-item__arrow {
-      transform: rotate(270deg);
+      color: #111111;
+      font-size: 14px;
+      font-weight: bold;
+      transform: rotate(90deg);
     }
 
     .el-collapse-item__arrow.is-active {
-      transform: rotate(90deg) !important;
+      transform: rotate(270deg) !important;
+    }
+  }
+}
+
+@media screen and (min-width: 1930px) and (max-width: 3000px) {
+  .bottom-swiper {
+    .inner {
+      height: 1529px !important;
     }
   }
 }
@@ -1101,16 +1200,10 @@ onUnmounted(() => {
     width: 100%;
     padding: 0;
 
-    .mySwiper {
-      .ent-item {
-        height: 600px;
-      }
-    }
-
     .btn-bottom {
       & > .el-icon {
         position: absolute;
-        right: 30px;
+        right: 36px;
       }
     }
   }
@@ -1124,16 +1217,15 @@ onUnmounted(() => {
 /* 小型设备（电话，平板 992px 及以下） */
 @media only screen and (max-width: 992px) {
   .banner-title {
+    width: 100% !important;
+    padding: 0 28px 67px;
     .title {
-      width: 80%;
-      bottom: 30%;
-      left: 10%;
+      width: 100%;
       font-size: 32px;
+      line-height: 41px;
     }
 
     .info-item {
-      left: 10%;
-      bottom: 15%;
       flex-wrap: wrap;
 
       .icon {
@@ -1173,15 +1265,26 @@ onUnmounted(() => {
 
   .intro {
     &-box {
-      width: 80%;
-      padding: 100px 0 40px;
-      // box-sizing: border-box;
+      width: 100%;
+      padding: 137px 28px 0;
+      box-sizing: border-box !important;
       &-title {
+        width: 100%;
         font-size: 32px;
+        font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 41px;
       }
 
       .content {
-        padding: 45px 0 100px;
+        width: 100%;
+        padding: 45px 0 52px;
+        font-size: 32px;
+        font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 41px;
       }
     }
 
@@ -1189,29 +1292,42 @@ onUnmounted(() => {
       flex-direction: column;
 
       .tip {
-        width: 90%;
+        width: 100%;
         margin-bottom: 50px;
 
         &-title {
-          height: 36px;
-          margin-bottom: 5px;
+          height: 24px;
           font-size: 16px;
+          font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.9);
+          line-height: 24px;
         }
 
         &-con {
-          margin-bottom: 5px;
+          height: 36px;
+          margin: 2px 0;
           font-size: 24px;
+          font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
+          font-weight: bold;
+          color: rgba(255, 255, 255, 0.9);
+          line-height: 36px;
         }
 
         &-info {
-          height: auto;
-          margin: 10px 0 20px;
+          height: 69px;
+          min-height: 100%;
           font-size: 14px;
+          font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
+          font-weight: 400;
+          color: rgba(255, 255, 255, 0.7);
+          line-height: 23px;
         }
 
         .el-button {
           width: 116px;
           height: 42px;
+          margin-top: 23px;
           font-size: 15px;
         }
       }
@@ -1221,24 +1337,36 @@ onUnmounted(() => {
   .ent-live {
     width: 100%;
     padding: 0;
+    margin-top: 63px;
 
     .title {
       margin-bottom: 30px;
+      font-size: 32px;
     }
 
     .mySwiper {
       width: 100% !important;
 
       .swiper-slide {
-        width: 303px !important;
-        // height: 500px !important;
+        width: 310px !important;
+        height: 540px !important;
+      }
+    }
+
+    .btn-bottom {
+      .gl-button {
+        width: 130px;
+        height: 42px;
+        line-height: 40px;
+        font-size: 15px;
       }
     }
   }
 
   .bottom-swiper {
+    margin-top: 72px;
     .inner {
-      height: 1050px;
+      height: 1013px;
 
       .swiper-one {
         height: 540px !important;
@@ -1269,9 +1397,10 @@ onUnmounted(() => {
               font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
             }
 
-            .el-button {
+            .gl-button {
               width: 130px;
               height: 42px;
+              line-height: 40px;
               font-size: 15px;
             }
           }
@@ -1279,18 +1408,27 @@ onUnmounted(() => {
       }
 
       .swiper-box {
-        .swiper-item {
-          .swiper-slide {
-            width: 180px !important;
-            height: 100px !important;
-          }
+        .flex-swiper-box {
+          height: 100px;
 
-          .btn-bottom {
-            .el-button {
-              width: 130px;
-              height: 42px;
-              font-size: 15px;
+          .flex-swiper {
+            & > div {
+              width: 180px !important;
+              height: 100px !important;
+              p {
+                top: 9px;
+                left: 14px;
+                font-size: 16px;
+              }
             }
+          }
+        }
+        .btn-bottom {
+          .gl-button {
+            width: 130px;
+            height: 42px;
+            line-height: 40px;
+            font-size: 15px;
           }
         }
       }
@@ -1302,8 +1440,9 @@ onUnmounted(() => {
     margin: 60px auto;
 
     .title {
-      margin-bottom: 30px;
+      margin-bottom: 1px;
       font-size: 32px;
+      line-height: 47px;
     }
 
     :deep(.el-collapse) {
@@ -1314,11 +1453,14 @@ onUnmounted(() => {
       }
 
       .el-collapse-item__header {
+        height: 16px;
+        padding: 22px 0 24px;
         font-size: 16px;
       }
 
       .el-collapse-item__content {
         font-size: 14px;
+        line-height: 22px;
       }
     }
   }

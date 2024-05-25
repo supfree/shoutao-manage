@@ -53,6 +53,8 @@ export default {
         "Address": "住所",
 
         "Cooperation": "ビジネス提携 & 契約コンサルティング",
+        "Commercial":"ビジネス提携",
+        "Sign":"契約コンサルティング",
 
         "Submit": "提出",
         "Submit1": "投递简历",

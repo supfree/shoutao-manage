@@ -37,7 +37,7 @@ export default {
         "E-commerce-talent": "电商达人",
         "View-all": "查看全部",
         "Information": "了解达人",
-        "Watch-video": "观看影片",
+        "Watch-video": "观看视频",
         "Recently-live": "最新直播",
         "Load-more": "加载更多",
         "No-Load-more": "没有更多了",
@@ -55,6 +55,8 @@ export default {
         "Address": "地址",
 
         "Cooperation": "商务合作 & 签约咨询",
+        "Commercial":"商务合作",
+        "Sign":"签约咨询",
 
         "Submit": "提交",
         "Submit1": "投递简历",
@@ -67,7 +69,9 @@ export default {
 
         "Name": "姓名",
         "Info": "详情",
-        "OR": "或"
+        "OR": "或",
+
+        "Copyright": "Copyright © 2023 光生传媒。 保留所有权利。"
     },
     ...znLocale
 };

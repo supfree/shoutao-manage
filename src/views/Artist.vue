@@ -1,5 +1,5 @@
 <template>
-  <div class="artist">
+  <div :class="['artist', detail.background == 0 ? 'dark' : '']">
     <div class="mask-box">
       <img class="bg-poster" :src="imageUrl + detail.image" alt="" />
       <div class="mask"></div>
@@ -11,14 +11,16 @@
           <p class="tip">
             <span class="span1">全网粉丝</span>
             <span class="span2">{{ detail.fans }}</span>
+            <span class="span1">{{ detail.fans_unit }}</span>
             <el-divider
               direction="vertical"
               style="color: rgba(17, 17, 17, 0.55)"
             />
             <span class="span1">获赞</span>
             <span class="span2">{{ detail.like }}</span>
+            <span class="span1">{{ detail.like_unit }}</span>
           </p>
-          <p class="intro">{{ detail.editor }}</p>
+          <p class="intro" v-html="detail.editor"></p>
         </div>
       </div>
 
@@ -26,13 +28,15 @@
 
       <!-- 触达平台 -->
       <div class="flex-icon">
-        <h3>触达平台</h3>
+        <h3>触达平台222</h3>
         <div class="logo-list">
           <div class="box" v-for="(item, index) in detail.platform" :key="item">
-            <div class="fadea-transition" v-show="showIcon(index)">
-              <img :src="imageUrl + item.image" alt="" />
-              <p class="name">{{ item.name }}</p>
-            </div>
+            <transition name="fadea">
+              <div class="fadea-transition" v-show="showIcon(index)">
+                <img :src="imageUrl + item.image" alt="" />
+                <p class="name">{{ item.name }}</p>
+              </div>
+            </transition>
           </div>
         </div>
       </div>
@@ -44,12 +48,11 @@
         <h3>合作品牌</h3>
         <div class="logo-list">
           <div class="box1" v-for="(item, index) in detail.brand" :key="item">
-            <img
-              class="fadea-transition"
-              :src="imageUrl + item.image"
-              alt=""
-              v-show="showIcon1(index)"
-            />
+            <transition name="fadea">
+              <div class="fadea-transition" v-show="showIcon1(index)">
+                <img :src="imageUrl + item.image" alt="" />
+              </div>
+            </transition>
           </div>
         </div>
       </div>
@@ -116,7 +119,7 @@
         <div class="box">
           <img :src="imageUrl + store.merchant_cooperation" alt="" />
           <div>
-            <p>商务合作</p>
+            <p>{{$t("other.Commercial")}}</p>
             <p>微信扫描二维码</p>
             <p>长按图片保存二维码到本地</p>
           </div>
@@ -124,18 +127,46 @@
         <div class="box">
           <img :src="imageUrl + store.signing_consultation" alt="" />
           <div>
-            <p>签约咨询</p>
+            <p>{{$t("other.Sign")}}</p>
             <p>微信扫描二维码</p>
             <p>长按图片保存二维码到本地</p>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- 投递简历 -->
+    <div class="deliver" v-if="0">
+      <!-- <img class="logo" :src="imageUrl + detail3.image" alt="" /> -->
+      <!-- <h2>{{ detail3.title }}</h2>
+      <p>{{ detail3.editor }}</p> -->
+      <div class="input-box">
+        <el-input
+          size="large"
+          v-model="form.name"
+          :placeholder="$t('other.Name')"
+        />
+        <el-input
+          size="large"
+          v-model="form.email"
+          :placeholder="$t('other.E-Mail')"
+        />
+        <el-input
+          v-model="form.textarea"
+          :rows="5"
+          type="textarea"
+          :placeholder="$t('other.Info')"
+        />
+      </div>
+      <el-button class="btn-push" size="large" round @click="submit">
+        {{ $t("other.E-Mail") }}
+      </el-button>
+    </div>
   </div>
 </template>
 <script setup>
 import { WOW } from "wowjs";
-import { getCurrentInstance, onMounted, ref, onUnmounted } from "vue";
+import { getCurrentInstance, onMounted, ref, onUnmounted, reactive } from "vue";
 import Card from "@/components/Card.vue";
 import { get, post, imageUrl } from "../assets/js/request.js";
 import { useRoute } from "vue-router";
@@ -158,12 +189,23 @@ const modules = [Navigation, Autoplay];
 const _isMobile =
   getCurrentInstance().appContext.config.globalProperties.$utils._isMobile();
 
+let form = reactive({
+  name: "",
+  email: "",
+  textarea: "",
+});
+
 onMounted(() => {
   new WOW().init();
   getArtist();
   getHomeInfo();
   window.addEventListener("scroll", handleScroll);
 });
+
+const dataForm = reactive({
+  background: "",
+});
+const emits = defineEmits(["increase"]);
 
 const detail = ref({});
 const store = ref({});
@@ -178,7 +220,9 @@ const getArtist = () => {
     logoList.value = res.data.platform;
     ocList.value = res.data.brand;
     store.value = res.data.store;
-    console.log(res, value, imageUrl);
+    dataForm.background = res.data.background;
+    emits('increase',dataForm);
+    // console.log(res, value, imageUrl);
   });
 };
 
@@ -229,7 +273,7 @@ const fadeShow1 = () => {
     }
     visibleIcons1.value.push(index.value);
     index.value++;
-  }, 400); // 间隔200ms显示一个图标
+  }, 200); // 间隔200ms显示一个图标
 };
 
 const handleScroll = () => {
@@ -248,9 +292,112 @@ onUnmounted(() => {
 });
 </script>
 <style lang="scss" scoped>
+.dark {
+  background-color: #000000;
+  .mask-box {
+    .mask {
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0) 20%,
+        #000000 100%
+      ) !important;
+    }
+  }
+
+  .contian {
+    .el-divider {
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .header {
+      .info {
+        h3 {
+          color: rgba(255, 255, 255, 0.93);
+        }
+        .tip {
+          .span1 {
+            color: rgba(255, 255, 255, 0.55);
+          }
+          .span2 {
+            color: rgba(255, 255, 255, 0.93);
+          }
+        }
+        .intro {
+          color: rgba(255, 255, 255, 0.77);
+        }
+      }
+    }
+    .flex-icon {
+      h3 {
+        color: rgba(255, 255, 255, 0.93);
+      }
+      .logo-list {
+        .box {
+          .name {
+            color: rgba(255, 255, 255, 0.55);
+          }
+        }
+
+        .box1 {
+          img {
+            filter: invert(100%);
+          }
+        }
+      }
+    }
+    .ent-live {
+      .title {
+        color: rgba(255, 255, 255, 0.93);
+      }
+    }
+  }
+
+  .contact {
+    .qrcode {
+      .box {
+        background-color: #1d1d1f;
+
+        img {
+          filter: invert(100%);
+        }
+
+        p {
+          color: rgba(255, 255, 255, 0.55);
+        }
+
+        p:first-child {
+          color: rgba(255, 255, 255, 0.93);
+        }
+      }
+    }
+  }
+
+  .deliver {
+    .input-box {
+      :deep(.el-input) {
+        .el-input__wrapper {
+          box-shadow: 0 0 0 0px
+            var(--el-input-border-color, var(--el-border-color)) inset;
+          cursor: default;
+          background-color: #1d1d1f;
+        }
+      }
+
+      :deep(.el-textarea) {
+        .el-textarea__inner {
+          box-shadow: 0 0 0 0px
+            var(--el-input-border-color, var(--el-border-color)) inset;
+          cursor: default;
+          background-color: #1d1d1f;
+        }
+      }
+    }
+  }
+}
+
 .artist {
   width: 100%;
   height: 100%;
+  padding-bottom: 144px;
 
   .mask-box {
     position: relative;
@@ -283,6 +430,7 @@ onUnmounted(() => {
   z-index: 99;
   position: relative;
   width: 51%;
+  max-width: 980px;
   margin: -50px auto 0;
 
   .el-divider-line {
@@ -296,6 +444,7 @@ onUnmounted(() => {
   .header {
     .info {
       width: 75%;
+      max-width: 742px;
 
       h3 {
         font-size: 36px;
@@ -305,6 +454,8 @@ onUnmounted(() => {
       }
 
       .tip {
+        display: flex;
+        align-items: center;
         margin: 20px 0;
 
         .span1 {
@@ -352,22 +503,19 @@ onUnmounted(() => {
       flex-wrap: wrap;
 
       .box {
-        width: 0.375rem;
         text-align: center;
         margin: 0 25px 25px 0;
         img {
-          width: 0.375rem;
-          height: 0.375rem;
+          width: 72px;
+          height: 72px;
         }
       }
 
       .box1 {
-        width: 144px;
-        height: 90px;
-        margin: 0 16px 25px 0;
+        margin: 0 15px 25px 0;
         img {
-          width: 100%;
-          height: 100%;
+          width: 144px;
+          height: 90px;
         }
       }
 
@@ -379,6 +527,19 @@ onUnmounted(() => {
         font-weight: 400;
         color: rgba(17, 17, 17, 0.7);
       }
+    }
+
+    .fadea-transition {
+      opacity: 1;
+      /* 初始状态为透明 */
+      transition: opacity 0.5s;
+      /* 过渡效果，持续时间为0.5秒 */
+    }
+
+    .fadea-enter-active,
+    .fadea-leave-active {
+      opacity: 0;
+      /* 动画激活时的最终状态，完全显示 */
     }
   }
 
@@ -393,6 +554,7 @@ onUnmounted(() => {
     .title {
       margin-bottom: 30px;
       font-size: 24px;
+      font-weight: 500;
       font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
       color: rgba(17, 17, 17, 0.93);
     }
@@ -403,10 +565,12 @@ onUnmounted(() => {
       height: 100%;
 
       .swiper-slide {
-        width: 1.9rem !important;
+        // width: 1.9rem !important;
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 376px !important;
+        height: 668px;
         font-size: 18px;
         text-align: center;
         background-color: #fff;
@@ -434,7 +598,8 @@ onUnmounted(() => {
     align-items: center;
     flex-direction: row;
     width: 51%;
-    margin: 0 auto 200px;
+    max-width: 980px;
+    margin: 0 auto;
 
     .box {
       display: flex;
@@ -475,15 +640,78 @@ onUnmounted(() => {
   }
 }
 
-@media only screen and (max-width: 1300px) {
-  .ent-live {
-    .mySwiper {
-      .ent-item {
-        height: 600px;
-      }
+.deliver {
+  width: 51%;
+  margin: 130px auto;
+  text-align: center;
+
+  .logo {
+    width: 172px;
+    height: 172px;
+    object-fit: cover;
+  }
+
+  h2 {
+    margin: 16px 6px;
+    font-size: 56px;
+    font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
+    font-weight: bold;
+    color: rgba(17, 17, 17, 0.93);
+  }
+
+  p {
+    width: 730px;
+    margin: 0 auto;
+    font-size: 24px !important;
+    font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
+    font-weight: 500;
+    color: rgba(17, 17, 17, 0.93);
+    line-height: 1.5;
+  }
+
+  .input-box {
+    width: 454px;
+    margin: 50px auto;
+
+    .el-input {
+      width: 100%;
+      height: 56px;
+      margin-bottom: 28px;
+      border-radius: 8px !important;
     }
   }
 
+  .btn-push {
+    width: 160px;
+    height: 56px;
+    font-size: 17px;
+    font-weight: 500;
+    border-radius: 28px;
+    font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
+    color: rgba(17, 17, 17, 0.77);
+    background-color: #e8e8ee;
+  }
+
+  .el-divider {
+    width: 100%;
+    margin: 78px auto;
+  }
+
+  .qrcode {
+    width: 148px;
+    height: 148px;
+  }
+
+  .mt24 {
+    margin-top: 24px;
+    font-size: 14px !important;
+    font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
+    font-weight: 400;
+    color: rgba(17, 17, 17, 0.55);
+  }
+}
+
+@media only screen and (max-width: 1300px) {
   .swiper-button-prev,
   .swiper-button-next {
     display: none;
@@ -493,6 +721,7 @@ onUnmounted(() => {
 /* 小型设备（电话，平板 992px 及以下） */
 @media only screen and (max-width: 992px) {
   .artist {
+    padding-bottom: 0;
     .mask-box {
       height: 200px;
     }
@@ -504,7 +733,7 @@ onUnmounted(() => {
 
   .contian {
     width: 100% !important;
-    padding: 0 30px;
+    padding: 0 28px;
 
     .el-divider-line {
       margin: 31px 0;
@@ -526,6 +755,7 @@ onUnmounted(() => {
 
           .span1 {
             font-size: 14px;
+            color: rgba(17, 17, 17, 0.93);
           }
 
           .el-divider {
@@ -552,13 +782,17 @@ onUnmounted(() => {
 
       .logo-list {
         .box {
-          width: 56px;
-          height: 56px;
+          img {
+            width: 56px;
+            height: 56px;
+          }
         }
 
         .box1 {
-          width: 28%;
-          height: 60px;
+          img {
+            width: 96px;
+            height: 60px;
+          }
         }
 
         .name {
@@ -581,7 +815,7 @@ onUnmounted(() => {
 
         .swiper-slide {
           width: 330px !important;
-          // height: 500px !important;
+          height: 540px !important;
         }
       }
     }
@@ -593,7 +827,8 @@ onUnmounted(() => {
     .qrcode {
       display: block;
       width: 100% !important;
-      margin: 40px auto 70px;
+      padding: 36px 0 72px;
+      margin: 0 auto;
 
       .box {
         width: 100%;

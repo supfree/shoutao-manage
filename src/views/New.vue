@@ -11,8 +11,8 @@
       >
         <img :src="imageUrl + item.image1" alt="" />
         <div class="item-info">
-          <p class="i-title u-line-1">{{ item.name }}</p>
-          <p class="intro u-line-2">{{ item.title_deputy }}</p>
+          <p class="i-title u-line-1" v-html="item.name"></p>
+          <p class="intro u-line-2" v-html="item.title_deputy"></p>
           <p class="date">
             {{
               traversalTime(item.date)[0] +
@@ -48,12 +48,21 @@ onMounted(() => {
 const handleScroll = () => {
   const box = document.querySelector(".item3");
   const box1 = document.querySelector(".item4");
+  const box2 = document.querySelector(".item5");
   const scrollTop = document.documentElement.scrollTop;
   if (scrollTop >= 400) {
-    box.classList.add("animate__fadeInUp", "show");
-    box.classList.remove("hidden");
-    box1.classList.add("animate__fadeInUp", "show");
-    box1.classList.remove("hidden");
+    if (box) {
+      box.classList.add("animate__fadeInUp", "show");
+      box.classList.remove("hidden");
+    }
+    if (box1) {
+      box1.classList.add("animate__fadeInUp", "show");
+      box1.classList.remove("hidden");
+    }
+    if (box2) {
+      box2.classList.add("animate__fadeInUp", "show");
+      box2.classList.remove("hidden");
+    }
   }
 };
 
@@ -65,13 +74,13 @@ const getNewList = (type) => {
     store_id: localStorage.getItem("key") || 1,
     page: page.value,
   }).then((res) => {
+    if (res.data.data.length == 0 || res.data.data.length < 9) {
+      end.value = true;
+    }
     if (type == "refresh") {
-      list.list = res.data;
+      list.list = res.data.data;
     } else {
-      list.list = list.list.concat(res.data);
-      if (res.data.length == 0) {
-        end.value = true;
-      }
+      list.list = list.list.concat(res.data.data);
     }
 
     list.list.map((item, index) => {
@@ -120,7 +129,9 @@ onUnmounted(() => {
     display: flex;
     flex-wrap: wrap;
     width: 51%;
+    max-width: 980px;
     margin: 0 auto;
+    padding-bottom: 144px;
 
     & > div {
       margin-bottom: 40px;
@@ -157,16 +168,18 @@ onUnmounted(() => {
     img {
       width: 100%;
       height: 2.86rem;
+      max-height: 550px;
     }
   }
 
   .short {
-    width: calc(50% - 20px);
+    width: calc(50% - 15px);
     box-sizing: border-box;
 
     img {
       width: 100%;
       height: 1.38rem;
+      max-height: 266px;
     }
   }
 

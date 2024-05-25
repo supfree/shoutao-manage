@@ -6,18 +6,16 @@
       <div class="banner-op">
         <img src="../assets/images/font1.svg" alt="" />
         <p class="btn-group btn-play" @click="toggleBox(detail.url)">
-          {{ $t("other.Watch-video")
-          }}<el-icon>
-            <VideoPlay />
-          </el-icon>
+          {{ $t("other.Watch-video") }}
+          <img src="../assets/images/icons/play-filling.svg" alt="" />
         </p>
         <p
           class="btn-group btn-link"
-          style="border: none"
+          style="border: none; height: auto"
           @click="goInfo(detail.button_url)"
         >
-          {{ $t("other.Information")
-          }}<el-icon>
+          {{ $t("other.Information") }}
+          <el-icon size="12">
             <ArrowRight />
           </el-icon>
         </p>
@@ -30,15 +28,22 @@
         <div class="banner-op">
           <img class="bpone" src="../assets/images/font2.svg" alt="" />
           <div>
-            <p class="btn-group btn-play mr15" @click="toggleBox(detail1.url)">
-              {{ $t("other.Watch-video")
-              }}<el-icon>
-                <VideoPlay />
-              </el-icon>
+            <p class="btn-group btn-play" @click="toggleBox(detail1.url)">
+              {{ $t("other.Watch-video") }}
+              <img
+                src="../assets/images/icons/play-filling1.svg"
+                alt=""
+                v-if="_isMobile"
+              />
+              <img
+                src="../assets/images/icons/play-filling.svg"
+                alt=""
+                v-else
+              />
             </p>
             <p class="btn-group btn-link" @click="goInfo(detail.button_url)">
-              {{ $t("other.Information")
-              }}<el-icon>
+              {{ $t("other.Information") }}
+              <el-icon size="12">
                 <ArrowRight />
               </el-icon>
             </p>
@@ -48,17 +53,24 @@
       <div class="img-item">
         <img class="bg" :src="imageUrl + detail2.image" alt="" />
         <div class="banner-op">
-          <img src="../assets/images/font3.svg" alt="" />
+          <img class="bptwo" src="../assets/images/font3.svg" alt="" />
           <div>
-            <p class="btn-group btn-play mr15" @click="toggleBox(detail2.url)">
-              {{ $t("other.Watch-video")
-              }}<el-icon>
-                <VideoPlay />
-              </el-icon>
+            <p class="btn-group btn-play" @click="toggleBox(detail2.url)">
+              {{ $t("other.Watch-video") }}
+              <img
+                src="../assets/images/icons/play-filling1.svg"
+                alt=""
+                v-if="_isMobile"
+              />
+              <img
+                src="../assets/images/icons/play-filling.svg"
+                alt=""
+                v-else
+              />
             </p>
             <p class="btn-group btn-link" @click="goInfo(detail.button_url)">
-              {{ $t("other.Information")
-              }}<el-icon>
+              {{ $t("other.Information") }}
+              <el-icon size="12">
                 <ArrowRight />
               </el-icon>
             </p>
@@ -215,13 +227,13 @@ const getBroadcast = (status) => {
     page: page.value,
   }).then((res) => {
     console.log(res);
+    if (res.data[1].data.length == 0 || res.data[1].data.length < 9) {
+      end.value = true;
+    }
     if (status == "refresh") {
-      list.value = res.data[1];
+      list.value = res.data[1].data;
     } else {
-      if (res.data[1].length == 0) {
-        end.value = true;
-      }
-      list.value = list.value.concat(res.data[1]);
+      list.value = list.value.concat(res.data[1].data);
     }
     detail = res.data[0].children[0];
     detail1 = res.data[0].children[1];
@@ -259,7 +271,7 @@ const goInfo = (e) => {
     z-index: 1;
     position: relative;
     width: 100%;
-    height: calc(100vh - 56px);
+    height: 742px;
 
     .bg {
       position: absolute;
@@ -271,15 +283,19 @@ const goInfo = (e) => {
     }
 
     .banner-op {
+      z-index: 2;
       position: absolute;
       left: 50%;
       bottom: 0;
-      transform: translate(-50%, -30%);
-      z-index: 2;
+      transform: translate(-50%, -52px);
 
       & > img {
         width: 390px;
         height: 150px;
+      }
+
+      .btn-play {
+        margin: 14px auto;
       }
     }
   }
@@ -307,10 +323,10 @@ const goInfo = (e) => {
         z-index: 2;
         position: absolute;
         left: 0;
-        bottom: 0.3rem;
+        bottom: 56px;
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: flex-end;
         justify-content: space-between;
         width: 100%;
         padding: 0 0.36rem;
@@ -322,22 +338,19 @@ const goInfo = (e) => {
         }
 
         .bptwo {
-          width: 266px;
-          height: 108px;
+          width: 1.38rem;
+          height: 0.56rem;
         }
 
         & > div {
           display: flex;
           align-items: center;
+          flex-direction: row-reverse;
           justify-content: space-between;
-
-          .btn-play {
-            margin: 0;
-          }
         }
 
-        .mr15 {
-          margin-right: 15px !important;
+        .btn-link {
+          margin-right: 14px;
         }
       }
     }
@@ -350,34 +363,30 @@ const goInfo = (e) => {
     width: 0.76rem;
     height: 0.25rem;
     font-size: 0.09rem;
+    border-radius: 1000px;
+    img {
+      width: 14px;
+      height: 14px;
+      margin-left: 8px;
+    }
   }
 
   .btn-play {
-    margin: 20px auto;
+    margin: 0 auto;
     font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
     font-weight: 500;
-    border-radius: 24px;
     color: rgba(17, 17, 17, 0.93);
     background-color: #ffffff;
     cursor: pointer;
-
-    .el-icon {
-      margin-left: 5px;
-    }
   }
 
   .btn-link {
     margin: 0 auto;
     font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
     font-weight: 500;
-    border-radius: 24px;
     color: #ffffff;
     border: 1px solid #ffffff;
     cursor: pointer;
-
-    .el-icon {
-      margin-left: 5px;
-    }
   }
 
   .live-box {
@@ -388,6 +397,7 @@ const goInfo = (e) => {
 
     .box {
       width: 62.5%;
+      max-width: 1200px;
       height: 100%;
       margin: 0 auto;
 
@@ -405,25 +415,26 @@ const goInfo = (e) => {
           font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
           font-weight: bold;
           color: rgba(17, 17, 17, 0.93);
+          line-height: 47px;
         }
 
         .tab {
           display: flex;
           align-items: center;
-          justify-content: center;
           background-color: #ffffff;
 
           div {
             flex: 0 0 auto;
-            padding: 11px 28px;
+            padding: 8px 28px;
             margin-left: 14px;
-            border-radius: 21px;
-            text-align: center;
             font-size: 17px;
-            font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
+            text-align: center;
             font-weight: 400;
+            line-height: 25px;
+            border-radius: 100px;
             color: rgba(17, 17, 17, 0.93);
             background-color: rgba(17, 17, 17, 0.05);
+            font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
             cursor: pointer;
           }
         }
@@ -442,6 +453,11 @@ const goInfo = (e) => {
           grid-template-columns: repeat(3, auto);
           grid-gap: 36px;
           width: 100%;
+        }
+
+        .ent-item {
+          width: 1.96rem;
+          height: 3.48rem;
         }
       }
     }
@@ -462,23 +478,27 @@ const goInfo = (e) => {
   }
 }
 
-@media only screen and (max-width: 1300px) {
-  .live-list {
-    grid-template-columns: repeat(2, 45%) !important;
-    grid-gap: 50px !important;
-  }
-}
-
 /* 小型设备（电话，平板 992px 及以下） */
 @media only screen and (max-width: 992px) {
   .live {
     .banner {
       .banner-op {
+        transform: translate(-50%, -58px);
         & > img {
           width: 300px;
           height: 114px;
           object-position: center;
           object-fit: cover;
+        }
+
+        .btn-link {
+          margin: 0 auto;
+          font-weight: 400;
+          font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
+        }
+
+        .btn-play {
+          margin: 10px auto 17px !important;
         }
       }
     }
@@ -488,29 +508,55 @@ const goInfo = (e) => {
       height: 42px;
       font-size: 15px;
     }
-  }
 
-  .gird-img {
-    flex-direction: column !important;
+    .gird-img {
+      flex-direction: column !important;
 
-    .img-item {
-      width: 100% !important;
-      margin-top: 15px;
+      .img-item {
+        width: 100%;
+        height: 210px;
+        margin-top: 15px;
 
-      .banner-op {
-        flex-direction: column !important;
+        .banner-op {
+          bottom: 24px;
+          align-items: center;
+          flex-direction: column;
 
-        img {
-          margin-bottom: 10px;
-        }
+          .bpone {
+            width: 138px;
+            height: 30px;
+          }
 
-        .btn-link {
-          border: none;
-        }
+          .bptwo {
+            width: 138px;
+            height: 56px;
+          }
 
-        .btn-play {
-          color: #ffffff;
-          background: none;
+          & > img {
+            margin-bottom: 10px;
+          }
+
+          & > div {
+            flex-direction: row;
+          }
+
+          .btn-group {
+            width: max-content;
+            height: auto;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+            font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
+          }
+
+          .btn-link {
+            margin: 0 !important;
+            border: none;
+          }
+
+          .btn-play {
+            margin-right: 28px;
+            background: none;
+          }
         }
       }
     }
@@ -523,9 +569,9 @@ const goInfo = (e) => {
 
       .header {
         flex-direction: column !important;
-        margin: 62px 0 28px !important;
+        margin: 62px 0 18px !important;
         h3 {
-          margin-bottom: 21px;
+          margin-bottom: 11px;
         }
 
         .el-affix {
@@ -535,21 +581,15 @@ const goInfo = (e) => {
 
         .tab {
           width: 100%;
-          margin: 0;
-          padding: 10px 0 10px 20px;
+          padding: 10px 0 10px 28px;
           overflow-x: scroll;
-          overflow-y: hidden;
           div {
+            line-height: 20px !important;
             font-size: 14px !important;
             margin-left: 0 !important;
             margin-right: 14px !important;
           }
         }
-      }
-
-      .load-box {
-        width: 90% !important;
-        margin: 36px auto;
       }
     }
   }
@@ -560,10 +600,6 @@ const goInfo = (e) => {
     .pc-swiper {
       display: none !important;
     }
-  }
-
-  .ent-item {
-    height: 100vh !important;
   }
 
   .live {

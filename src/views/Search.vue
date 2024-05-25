@@ -6,9 +6,9 @@
           size="large"
           v-model="value"
           placeholder="请输入您要搜索的内容"
-          clearable
           prefix-icon="Search"
           @keydown.enter="getSearch"
+          clearable
         />
       </div>
     </div>
@@ -19,7 +19,7 @@
           <div>
             <p class="title u-line-2">{{ item.name }}</p>
             <p class="info u-line-2">{{ item.title_deputy }}</p>
-            <el-link class="u-line-1" type="primary" :href="item.link">{{
+            <el-link class="u-line-1" type="primary" :href="item.href">{{
               item.link
             }}</el-link>
           </div>
@@ -28,7 +28,7 @@
           <div>
             <p class="title">{{ item.name }}</p>
             <p class="info u-line-2">{{ item.title_deputy }}</p>
-            <el-link class="u-line-1" type="primary" :href="item.link">{{
+            <el-link class="u-line-1" type="primary" :href="item.href">{{
               item.link
             }}</el-link>
           </div>
@@ -60,11 +60,17 @@ const getSearch = () => {
     search: value.value,
     page: page.value,
   }).then((res) => {
-    res.data.forEach((element) => {
+    res.data.data.forEach((element) => {
       element.image1 = element.image.split(",")[0] || "";
-      element.link = router.resolve({ path: "/detail", query: { id: element.id } }).href;
+      element.link =
+        window.location.host +
+        router.resolve({ path: "/detail", query: { id: element.id } }).href;
+      element.href = router.resolve({
+        path: "/detail",
+        query: { id: element.id },
+      }).href;
     });
-    searchList.value = res.data;
+    searchList.value = res.data.data;
     // console.log(detail, imageUrl);
   });
 };
@@ -87,6 +93,11 @@ const getSearch = () => {
 
     .el-input {
       width: 470px;
+      height: 42px;
+      :deep(.el-input__wrapper) {
+        border-radius: 8px;
+        border-color: rgba(17, 17, 17, 0.17);
+      }
     }
   }
 

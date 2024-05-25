@@ -67,7 +67,9 @@ export default {
 
         "Name": "Name / Corporate name",
         "Info": "Affection",
-        "OR": "OR"
+        "OR": "OR",
+
+        "Copyright": "Copyright © 2023 VividTide.  All rights reserved."
     },
     ...enLocale
 };

@@ -17,14 +17,16 @@
           <p class="tip">
             <span class="span1">全网粉丝</span>
             <span class="span2">{{ detail.fans }}</span>
+            <span class="span1">{{ detail.fans_unit }}</span>
             <el-divider direction="vertical" />
             <span class="span1">全网获赞</span>
             <span class="span2">{{ detail.like }}</span>
+            <span class="span1">{{ detail.like_unit }}</span>
           </p>
           <p class="intro">{{ detail.editor }}</p>
           <p class="btn-link" @click="goInfo(detail.button_url)">
             {{ $t("other.Information") }}
-            <el-icon>
+            <el-icon size="12">
               <ArrowRight />
             </el-icon>
           </p>
@@ -71,7 +73,8 @@
             ></Card>
           </div>
           <div class="load-box" @click="getMoreList" v-if="!end">
-            {{ end ? $t("other.No-Load-more") : $t("other.Load-more") }}
+            {{ end ? $t("other.No-Load-more") : $t("other.Load-more")
+            }}{{ end }}
           </div>
         </div>
 
@@ -160,14 +163,14 @@ const getArtist = (status) => {
     page: page.value,
   }).then((res) => {
     // console.log(res);
+    if (res.data[1].data.length == 0 || res.data[1].data.length < 9) {
+      end.value = true;
+    }
     if (status == "refresh") {
       // list.value = [];
-      list.value = res.data[1];
+      list.value = res.data[1].data;
     } else {
-      if (res.data[1].length == 0) {
-        end.value = true;
-      }
-      list.value = list.value.concat(res.data[1]);
+      list.value = list.value.concat(res.data[1].data);
     }
     detail.value = res.data[0];
   });
@@ -219,7 +222,7 @@ const goInfo = (e) => {
       & > img {
         width: 346px;
         height: 154px;
-        margin-bottom: 24px;
+        margin-bottom: 21px;
       }
 
       & > div {
@@ -262,13 +265,14 @@ const goInfo = (e) => {
         }
 
         .intro {
-          width: 25%;
+          width: 50%;
+          max-width: 454px;
           margin-top: 14px;
           font-size: 16px;
           font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
           font-weight: 400;
           color: rgba(255, 255, 255, 0.77);
-          line-height: 1.5;
+          line-height: 26px;
         }
       }
 
@@ -279,13 +283,13 @@ const goInfo = (e) => {
         height: 48px;
         margin: 45px 0 52px;
         font-size: 17px;
-        font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
-        font-weight: 500;
+        font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
+        font-weight: 400;
         color: rgba(255, 255, 255, 0.9);
         cursor: pointer;
 
         .el-icon {
-          margin-left: 5px;
+          margin-left: 4px;
         }
       }
     }
@@ -299,6 +303,7 @@ const goInfo = (e) => {
 
     .box {
       width: 62.5%;
+      max-width: 1200px;
       height: 100%;
       margin: 0 auto;
 
@@ -317,23 +322,24 @@ const goInfo = (e) => {
           font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
           font-weight: bold;
           color: rgba(17, 17, 17, 0.93);
+          line-height: 47px;
         }
 
         .tab {
           display: flex;
           align-items: center;
-          justify-content: center;
           background-color: #ffffff;
 
           div {
             flex: 0 0 auto;
-            padding: 11px 28px;
+            padding: 8px 28px;
             margin-left: 14px;
-            border-radius: 21px;
+            border-radius: 50px;
             text-align: center;
             font-size: 17px;
             font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
             font-weight: 400;
+            line-height: 25px;
             color: rgba(17, 17, 17, 0.93);
             background-color: rgba(17, 17, 17, 0.05);
             cursor: pointer;
@@ -355,6 +361,11 @@ const goInfo = (e) => {
           grid-gap: 36px;
           width: 100%;
         }
+
+        .ent-item {
+          width: 1.96rem;
+          height: 3.48rem;
+        }
       }
     }
   }
@@ -374,28 +385,11 @@ const goInfo = (e) => {
   }
 }
 
-@media only screen and (max-width: 750px) {
-  .live-box {
-    .pc-swiper {
-      display: none !important;
-    }
-  }
-
-  .ent-item {
-    height: 100vh !important;
-  }
-
-  .master {
-    .mobie-swiper {
-      display: block !important;
-    }
-  }
-}
-
 /* 小型设备（电话，平板 992px 及以下） */
 @media only screen and (max-width: 992px) {
   .master {
     .banner {
+      height: 667px;
       .info {
         width: 90%;
         left: 5%;
@@ -417,6 +411,7 @@ const goInfo = (e) => {
           }
 
           .tip {
+            margin: 4px 0 5px;
             justify-content: center;
 
             .span1 {
@@ -434,10 +429,14 @@ const goInfo = (e) => {
 
           .intro {
             width: 100% !important;
+            max-width: 100%;
+            margin-top: 0;
             font-size: 14px;
+            line-height: 23px;
           }
         }
         .btn-link {
+          height: auto;
           font-size: 15px;
           margin: 18px auto 58px !important;
           justify-content: center;
@@ -453,9 +452,9 @@ const goInfo = (e) => {
 
       .header {
         flex-direction: column !important;
-        margin: 62px 0 28px !important;
+        margin: 62px 0 10px !important;
         h3 {
-          margin-bottom: 21px;
+          margin-bottom: 11px;
         }
 
         .el-affix {
@@ -465,30 +464,32 @@ const goInfo = (e) => {
 
         .tab {
           width: 100%;
-          margin: 0;
-          padding: 10px 0 10px 20px;
-          overflow-x: scroll;
-          overflow-y: hidden;
+          padding: 10px 0 10px 28px;
+          overflow: scroll !important;
           div {
+            line-height: 20px !important;
             font-size: 14px !important;
             margin-left: 0 !important;
             margin-right: 14px !important;
+            overflow: hidden !important;
           }
         }
-      }
-
-      .load-box {
-        width: 90% !important;
-        margin: 36px auto;
       }
     }
   }
 }
 
-@media only screen and (max-width: 1300px) {
-  .live-list {
-    grid-template-columns: repeat(2, 45%) !important;
-    grid-gap: 50px !important;
+@media only screen and (max-width: 750px) {
+  .live-box {
+    .pc-swiper {
+      display: none !important;
+    }
+  }
+
+  .master {
+    .mobie-swiper {
+      display: block !important;
+    }
   }
 }
 </style>

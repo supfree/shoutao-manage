@@ -171,7 +171,7 @@ const getNewList = () => {
     store_id: localStorage.getItem("key") || 1,
     page: 1,
   }).then((res) => {
-    recommendList.value = res.data;
+    recommendList.value = res.data.data;
     recommendList.value.map((item) => {
       item.image1 = item.image.split(",")[0] || [];
     });
@@ -227,7 +227,8 @@ const iconList = [
 }
 
 .contain {
-  width: 52%;
+  width: 51%;
+  max-width: 980px;
   margin: 0 auto;
 
   .header {
@@ -243,7 +244,7 @@ const iconList = [
 
     h2 {
       margin: 20px 0;
-      font-size: 0.25rem;
+      font-size: 48px;
       font-family: NotoSansCJKsc-Bold, NotoSansCJKsc;
       font-weight: bold;
       color: rgba(17, 17, 17, 0.93);
@@ -251,11 +252,12 @@ const iconList = [
     }
 
     .intro {
-      font-size: 0.125rem;
+      font-size: 24px;
       font-family: NotoSansCJKsc-Medium, NotoSansCJKsc;
       font-weight: 500;
+      word-break: break-all;
       color: rgba(17, 17, 17, 0.77);
-      line-height: 1.4;
+      line-height: 36px;
     }
   }
 
@@ -272,12 +274,10 @@ const iconList = [
     }
   }
 
-  .swiper-button-next {
-    display: block !important;
-  }
-
+  .swiper-button-next,
   .swiper-button-prev {
     display: block !important;
+    transform: rotate3d(0, 1, 0, 50deg);
   }
 
   .swiper-box {
@@ -288,8 +288,10 @@ const iconList = [
   .mySwiper {
     width: 100%;
     height: 2.87rem;
+    max-height: 550px;
     // margin: 0 20px;
     border-radius: 14px;
+    overflow: hidden;
 
     :deep(.swiper-pagination) {
       bottom: var(--swiper-pagination-bottom, 0px);
@@ -301,7 +303,7 @@ const iconList = [
     .swiper-slide {
       width: 100%;
       //   max-width: 980px;
-      padding-bottom: 30px;
+      padding-bottom: 36px;
       display: flex;
       justify-content: center;
 
@@ -315,6 +317,7 @@ const iconList = [
   }
 
   :deep(.content) {
+    max-width: 980px;
     padding: 60px 0;
     font-family: NotoSansCJKsc-Regular, NotoSansCJKsc;
     font-weight: 400;
@@ -342,8 +345,6 @@ const iconList = [
       justify-content: center;
       width: 100%;
       height: 100%;
-      //   height: 2.87rem;
-      border-radius: 14px;
     }
   }
 
@@ -360,6 +361,10 @@ const iconList = [
     .icon-box {
       margin-top: 30px;
     }
+
+    .el-divider {
+      margin: 72px 0 34px;
+    }
   }
 
   .recommend {
@@ -367,12 +372,23 @@ const iconList = [
       border: none;
     }
     &-item {
+      position: relative;
       display: flex;
       align-items: center;
       flex-direction: row;
       padding: 30px 0;
-      border-bottom: 1px solid rgba(17, 17, 17, 0.15);
+      border-bottom: 1px solid #DBDBDB;
       cursor: pointer;
+      // &::after {
+      //   position: absolute;
+      //   bottom: 0;
+      //   left: 0;
+      //   content: "";
+      //   width: 100%;
+      //   height: 1px;
+      //   background-color: rgba(255, 255, 255, 0);
+      //   box-shadow: inset 1px 1px 1px 1px rgba(17, 17, 17, 0.15);
+      // }
 
       & > img {
         width: 256px;
@@ -416,17 +432,22 @@ const iconList = [
       h2 {
         font-size: 32px;
       }
+      .intro {
+        font-size: 14px;
+        line-height: 20px;
+      }
       .icon-box {
         margin-top: 25px;
       }
     }
 
     .mySwiper {
+      height: auto;
+      border-radius: 0;
       .swiper-slide {
-        display: block;
-        padding: 20px 0;
-
+        padding-bottom: 22px;
         img {
+          height: 210px;
           border-radius: 0;
         }
       }
@@ -440,7 +461,7 @@ const iconList = [
     }
 
     :deep(.content) {
-      // padding: 30px;
+      padding-top: 23px;
       & > p {
         & > span {
           display: inline-block;
@@ -464,6 +485,10 @@ const iconList = [
       }
       .icon-box {
         margin-top: 25px;
+      }
+
+      .el-divider {
+        margin: 27px 0 32px;
       }
     }
 
